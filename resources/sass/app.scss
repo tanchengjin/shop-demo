@@ -1,1 +1,102 @@
-//
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
+
+.products-index-page {
+    .product-item {
+        &:hover {
+            border: 1px solid red;
+        }
+
+        border: 1px solid #eee;
+        margin-bottom: 10px;
+
+        img {
+            width: 100%;
+            padding: 10px;
+        }
+
+        .top {
+            a{
+                color: #000000;
+            }
+            .price {
+                color: red;
+                font-size: 21px;
+                font-weight: bold;
+            }
+
+            .title {
+                font-size: 16px;
+            }
+        }
+
+        .bottom {
+            display: flex;
+            flex-direction: row;
+
+            & > div:first-child {
+                border-right: 1px solid #eee;
+            }
+
+            div {
+                padding: 5px;
+                flex: 1;
+            }
+
+            .sold_count > span {
+                color: #2fbcf8;
+            }
+
+            .review_count > span {
+                color: #a79df8;
+            }
+
+            border-top: 1px solid #eee;
+        }
+    }
+}
+
+.products-show-page{
+    .title{
+        font-size: 23px;
+    }
+    .price>span{
+        color: red;
+        font-size: 21px;
+        font-weight: bold;
+    }
+
+    .sold_and_review{
+        border-top: 1px dotted #eee;
+        border-bottom: 1px dotted #eee;
+        padding: 10px 0;
+        display: flex;
+        &>div:first-child{
+            border-right: 1px dotted #eee;
+        }
+        div{
+            flex-grow: 1;
+        }
+        span{
+            color: red;
+        }
+    }
+
+    .amount{
+        margin: 5px 0;
+    }
+    .product-detail{
+        border-right: 1px dotted #eee;
+        .buttons{
+            &>div:first-child{
+                margin-right: 30px;
+            }
+        }
+    }
+}
