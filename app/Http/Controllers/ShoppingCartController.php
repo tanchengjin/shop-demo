@@ -22,4 +22,9 @@ class ShoppingCartController extends Controller
 
         return [];
     }
+
+    public function destroy($id,ShoppingCartService $cartService)
+    {
+        return $cartService->remove($id);
+    }
 }

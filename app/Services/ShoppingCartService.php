@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class ShoppingCartService
 {
+
     public function add($sku_id, $amount)
     {
         if($cart=ShoppingCart::query()->where('product_sku_id',$sku_id)->first()){
@@ -24,5 +25,11 @@ class ShoppingCartService
         }
 
         return $cart;
+    }
+
+    public function remove($sku_id)
+    {
+        Auth::user()->cart()->where('product_sku_id',$sku_id)->delete();
+        return [];
     }
 }

@@ -25,6 +25,7 @@ Route::get('products/{id}','ProductController@show')->name('products.show');
 Route::group(['middleware'=>['auth']],function(){
     Route::get('shoppingCart','ShoppingCartController@index')->name('carts.index');
     Route::post('shoppingCart','ShoppingCartController@store')->name('carts.store');
+    Route::delete('shoppingCart/{id}','ShoppingCartController@destroy')->name('carts.destroy');
 
 });
 

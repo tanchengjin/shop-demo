@@ -104,6 +104,12 @@
             $('#add_to_cart').click(function(){
                 amount=$('input[name=amount]').val()
                 sku=$('input[name=sku]:checked').val();
+
+                if(!sku){
+                    swal.fire('请选择商品规格','','warning');
+                    return;
+                }
+
                 axios.post('{{route('carts.store')}}',{
                     'id':sku,
                     'amount':amount
@@ -111,13 +117,16 @@
                     swal.fire({
                         'title':'操作成功!',
                         'text':'是否现在去支付',
+                        icon:'success',
                         showCancelButton:true,
                         showConfirmButton:true,
                         cancelButtonText:'留在本页面',
-                        confirmButtonText:'去支付'
+                        confirmButtonText:'去支付',
+                        preConfirm(inputValue) {
+                            location.href='{{route('carts.index')}}';
+                        }
                     });
                 },function(res){
-                    console.log(res)
                     swal.fire('error','','error')
                 })
             });
