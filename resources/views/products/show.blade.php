@@ -37,7 +37,7 @@
                                         @foreach($product->sku as $sku)
                                             <label data-price="{{$sku->price}}" data-stock="{{$sku->stock}}"
                                                    class="sku">
-                                                <input type="radio" value="{{$sku->title}}" name="sku">{{$sku->title}}
+                                                <input type="radio" value="{{$sku->id}}" name="sku">{{$sku->title}}
                                             </label>
                                         @endforeach
                                     </div>
@@ -46,17 +46,17 @@
                                     <div class="form-group form-inline">
                                         <label>
                                             数量
-                                            <input type="text" value="1" class="form-control form-control-sm">
+                                            <input type="text" value="1" class="form-control form-control-sm" name="amount">
                                         </label>
                                         <span id="stock"></span>
                                     </div>
                                 </div>
                                 <div class="buttons form-inline">
                                     <div>
-                                        <button class="btn btn-primary">加入购物车</button>
+                                        <button class="btn btn-primary" id="add_to_cart">加入购物车</button>
                                     </div>
                                     <div>
-                                        <button class="btn btn-success ">购买</button>
+                                        <button class="btn btn-success " id="buy">购买</button>
                                     </div>
                                 </div>
                             </div>
@@ -99,7 +99,28 @@
             $('.sku').click(function () {
                 $('.price span').text('￥' + $(this).data('price'))
                 $('#stock').text('库存 ' + $(this).data('stock'))
-            })
+            });
+
+            $('#add_to_cart').click(function(){
+                amount=$('input[name=amount]').val()
+                sku=$('input[name=sku]:checked').val();
+                axios.post('{{route('carts.store')}}',{
+                    'id':sku,
+                    'amount':amount
+                }).then(function(res){
+                    swal.fire({
+                        'title':'操作成功!',
+                        'text':'是否现在去支付',
+                        showCancelButton:true,
+                        showConfirmButton:true,
+                        cancelButtonText:'留在本页面',
+                        confirmButtonText:'去支付'
+                    });
+                },function(res){
+                    console.log(res)
+                    swal.fire('error','','error')
+                })
+            });
         })
     </script>
 @endsection

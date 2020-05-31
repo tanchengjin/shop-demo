@@ -25,6 +25,7 @@ class CreateProductsTable extends Migration
             $table->unsignedBigInteger('sold_count')->default(0);
             $table->unsignedBigInteger('review_count')->default(0);
             $table->boolean('on_sale')->default(1);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
