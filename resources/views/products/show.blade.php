@@ -127,7 +127,13 @@
                         }
                     });
                 },function(res){
-                    swal.fire('error','','error')
+                    if(res.response.status === 401){
+                        swal.fire('error','请先完成登录','warning').then(function(){
+                            location.href='{{route('login')}}';
+                        })
+                        return;
+                    }
+                    swal.fire('error','服务器错误','error')
                 })
             });
         })

@@ -12,7 +12,7 @@ class ShoppingCartController extends Controller
 {
     public function index()
     {
-        $carts=Auth::user()->cart()->get();
+        $carts=Auth::user()->cart()->with(['sku','sku.product'])->orderby('id','desc')->get();
         return view('carts.index',compact('carts'));
     }
 

@@ -11020,3 +11020,29 @@ a.text-dark:focus {
   margin-right: 30px;
 }
 
+.carts-index-page .amount {
+  width: 80px;
+}
+
+.carts-index-page .product-info {
+  display: flex;
+}
+
+.carts-index-page .product-info img {
+  max-width: 80px;
+  max-height: 80px;
+  margin-right: 5px;
+}
+
+.carts-index-page .product-info .product-detail {
+  display: block;
+}
+
+.carts-index-page .not_sale a {
+  text-decoration: line-through;
+}
+
+.carts-index-page .not_sale span {
+  color: red;
+}
+

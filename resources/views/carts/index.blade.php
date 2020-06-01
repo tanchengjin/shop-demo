@@ -18,10 +18,36 @@
                         <tbody>
                         @foreach($carts as $cart)
                             <tr data-id="{{$cart->sku->id}}">
-                                <td><input type="checkbox" class="product_checkbox"></td>
-                                <td>{{$cart->sku->title}}</td>
-                                <td>{{$cart->sku->price}}</td>
-                                <td><input type="text" value="{{$cart->amount}}" class="form-control form-control-sm"></td>
+                                <td><input type="checkbox" class="product_checkbox"
+                                           @if(!$cart->sku->product->on_sale) disabled @endif></td>
+                                <td>
+                                    <div class="product-info {{$cart->sku->product->on_sale?'':'not_sale'}}">
+                                        <div class="image">
+                                            <img src="{{$cart->sku->product->image}}" alt="">
+                                        </div>
+                                        <div class="product-detail">
+                                            <div class="product-title">
+                                                <a>
+                                                    {{$cart->sku->product->title}}
+                                                </a>
+                                            </div>
+                                            <div class="sku-title">
+                                                <a>
+                                                    {{$cart->sku->title}}
+                                                </a>
+                                            </div>
+                                            @if(!$cart->sku->product->on_sale)
+                                                <div>
+                                                    <span>该商品未上架</span>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>￥{{number_format($cart->sku->price,2)}} </td>
+                                <td><input type="text" value="{{$cart->amount}}"
+                                           class="form-control form-control-sm amount"
+                                           @if(!$cart->sku->product->on_sale) disabled @endif></td>
                                 <td>
                                     <button class="btn btn-danger btn-sm btn-remove">移除</button>
                                 </td>
@@ -41,10 +67,12 @@
     <script>
         $(document).ready(function () {
             $('#select-all').change(function () {
-                var checkbox = $(this).prop('checked')
-                $.each($('input[class=product_checkbox]:not([disabled])'), function () {
-                    $(this).prop('checked', checkbox)
+                var box_status = $(this).prop('checked')
+
+                $.each($('input[type=checkbox][class=product_checkbox]:not([disabled])'), function () {
+                    $(this).prop('checked', box_status)
                 });
+
             });
 
             $('.btn-remove').click(function () {
