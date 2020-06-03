@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\OrderRequest;
+use App\Order;
 use App\Services\OrderService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -22,5 +23,10 @@ class OrderController extends Controller
         $address_id=$request->input('address_id');
 
         return $orderService->store($items,$address_id,$remark);
+    }
+
+    public function show(Order $order,Request $request)
+    {
+        return view('orders.show',compact('order'));
     }
 }

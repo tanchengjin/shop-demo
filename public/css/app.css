@@ -11073,3 +11073,37 @@ a.text-dark:focus {
   border-left: 1px solid #eee;
 }
 
+.orders-show-page .product-info {
+  display: flex;
+}
+
+.orders-show-page .product-info img {
+  max-height: 80px;
+  max-width: 80px;
+  padding-right: 10px;
+}
+
+.orders-show-page .product-info .info {
+  display: block;
+}
+
+.orders-show-page .order-bottom {
+  display: flex;
+}
+
+.orders-show-page .order-bottom .order-info {
+  width: 50%;
+}
+
+.orders-show-page .order-bottom .order-info .line {
+  display: flex;
+}
+
+.orders-show-page .order-bottom .order-right {
+  width: 50%;
+}
+
+.orders-show-page .order-bottom .order-right .value {
+  display: inline-block;
+}
+

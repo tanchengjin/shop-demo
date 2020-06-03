@@ -29,7 +29,10 @@ class ShoppingCartService
 
     public function remove($sku_id)
     {
-        Auth::user()->cart()->where('product_sku_id',$sku_id)->delete();
+        if(!is_array($sku_id)){
+            $sku_id=[$sku_id];
+        }
+        Auth::user()->cart()->whereIn('product_sku_id',$sku_id)->delete();
         return [];
     }
 }

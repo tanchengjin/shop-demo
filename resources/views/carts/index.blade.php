@@ -105,13 +105,25 @@
             $('.btn-remove').click(function () {
                 var box = $(this).closest('tr');
                 var sku_id = box.data('id');
-                axios.delete('/shoppingCart/' + sku_id).then(function () {
-                    box.remove();
-                }, function () {
-                    swal.fire('操作失败！请重试！', '', 'error');
+                swal.fire({
+                    title:'确定要移除吗？',
+                    text:'移除后将不可恢复',
+                    icon:'warning',
+                    showConfirmButton:true,
+                    showCancelButton:true,
+                    confirmButtonText:'确定',
+                    cancelButtonText:'取消',
+                    preConfirm(inputValue) {
+                        if(inputValue){
+                            axios.delete('/shoppingCart/' + sku_id).then(function () {
+                                box.remove();
+                            }, function () {
+                                swal.fire('操作失败！请重试！', '', 'error');
+                            });
+                        }
+                    }
+
                 });
-
-
             });
 
 

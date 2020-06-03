@@ -8,6 +8,7 @@ use App\Jobs\ClosedOrder;
 use App\Order;
 use App\OrderItem;
 use App\ProductSku;
+use App\ShoppingCart;
 use App\UserAddress;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -59,6 +60,10 @@ class OrderService
             $order->update([
                 'total_amount'=>$total_amount
             ]);
+            $ids=collect($order->item)->pluck('product_sku_id')->all();
+
+            (new ShoppingCartService())->remove($ids);
+
             return $order;
         });
         dispatch(new ClosedOrder($order,30));

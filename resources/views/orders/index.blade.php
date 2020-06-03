@@ -58,7 +58,11 @@
                                                         @if($index === 0)
                                                             <td rowspan="{{count($order->item)}}">
                                                                 @if($order->paid_at)
-                                                                    等待发货
+                                                                    @if($order->refund_status === \App\Order::$refundMap[\App\Order::REFUND_STATUS_PENDING])
+                                                                        已支付
+                                                                    @else
+                                                                        {{\App\Order::$refundMap[$order->refund_status]}}
+                                                                        @endif
                                                                 @elseif($order->closed)
                                                                     订单已关闭
                                                                 @else
@@ -70,14 +74,15 @@
                                                             </td>
 
                                                             <td rowspan="{{count($order->item)}}">
-                                                                <b>￥{{$order->total_amount}}</b>
+                                                                <b>￥{{number_format($order->total_amount,2)}}</b>
                                                             </td>
                                                             <td rowspan="{{count($order->item)}}" class="text-center">
-                                                                <a href="#" class="btn btn-primary">查看订单</a>
+                                                                <a href="{{route('orders.show',$order->id)}}" class="btn btn-primary">查看订单</a>
                                                             </td>
                                                         @endif
                                                     </tr>
                                                 @endforeach
+
                                                 </tbody>
                                             </table>
                                         </div>
