@@ -55,6 +55,33 @@
                         @endforeach
                         </tbody>
                     </table>
+                    <div>
+                        <form>
+                            <div class="form-group row">
+                                <label class="col-3 text-right">收货地址</label>
+                                <div class="col-7">
+                                    <select name="address" id="" class="form-control">
+                                        @foreach($addresses as $address)
+                                        <option value="{{$address->id}}">{{$address->address}}</option>
+                                            @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <label class="col-sm-3 col-form-label text-right">备注:</label>
+                                <div class="col-md-7 col-sm-9">
+                                    <textarea name="remark" rows="3" style="resize: none" class="form-control"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="offset-3 col-sm-3">
+                                    <button type="button" class="create_order btn btn-primary">提交订单</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 @else
                     购物车内还没有任何商品，快去挑选喜欢的商品吧。
                 @endif
@@ -85,6 +112,35 @@
                 });
 
 
+            });
+
+
+            $('.create_order').click(function(){
+               var res={
+                   remark:$('textarea[name=remark]').val(),
+                   address_id:$('select option:selected').val(),
+                   items:[],
+               };
+
+               $('table tr[data-id]').each(function(){
+                   $checkbox=$(this).find('input[type=checkbox][class=product_checkbox]:not([disabled])')
+                   if(!$checkbox.prop('checked') || $checkbox.prop('disabled')){
+                       return;
+                   }
+                   var amount=$(this).find('.amount').val()
+
+                   if(amount === 0 || isNaN(amount)){
+                       return;
+                   }
+                   res.items.push({
+                      'sku_id':$(this).data('id'),
+                      'amount':amount
+                   });
+               });
+
+               axios.post('{{route('order.store')}}',res).then(function(res){
+                   console.log(res)
+               });
             });
         });
     </script>

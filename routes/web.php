@@ -27,6 +27,7 @@ Route::group(['middleware'=>['auth']],function(){
     Route::post('shoppingCart','ShoppingCartController@store')->name('carts.store');
     Route::delete('shoppingCart/{id}','ShoppingCartController@destroy')->name('carts.destroy');
 
+    Route::post('order','OrderController@store')->name('order.store');
 });
 
 Auth::routes();
