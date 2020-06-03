@@ -11046,3 +11046,30 @@ a.text-dark:focus {
   color: red;
 }
 
+.orders-index-page .product-info {
+  display: flex;
+}
+
+.orders-index-page .product-info img {
+  max-height: 80px;
+  max-width: 80px;
+}
+
+.orders-index-page .product-info #info {
+  display: block;
+}
+
+.orders-index-page .product-info .product-title,
+.orders-index-page .product-info .sku-title {
+  padding-left: 5px;
+  padding-bottom: 5px;
+}
+
+.orders-index-page .list-group-item {
+  border: none;
+}
+
+.orders-index-page td[rowspan] {
+  border-left: 1px solid #eee;
+}
+

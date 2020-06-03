@@ -9,6 +9,12 @@ use Illuminate\Support\Facades\Auth;
 
 class OrderController extends Controller
 {
+    public function index()
+    {
+        $orders=Auth::user()->order()->orderBy('created_at','desc')->paginate(16);
+        return view('orders.index',compact('orders'));
+    }
+
     public function store(OrderRequest $request,OrderService $orderService)
     {
         $remark=$request->input('remark')?:null;

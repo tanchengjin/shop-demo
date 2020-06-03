@@ -132,3 +132,26 @@
         }
     }
 }
+
+.orders-index-page{
+    .product-info{
+        display: flex;
+        img{
+            max-height:80px;
+            max-width: 80px;
+        }
+        #info{
+            display: block;
+        }
+        .product-title,.sku-title{
+            padding-left: 5px;
+            padding-bottom: 5px;
+        }
+    }
+    .list-group-item{
+        border: none;
+    }
+    td[rowspan]{
+        border-left: 1px solid #eee;
+    }
+}

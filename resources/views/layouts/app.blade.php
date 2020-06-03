@@ -66,6 +66,8 @@
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                         @csrf
                                     </form>
+
+                                    <a href="{{route('orders.index')}}" class="dropdown-item">我的订单</a>
                                 </div>
                             </li>
                         @endguest
