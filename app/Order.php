@@ -7,7 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     protected $fillable = [
-        'total_amount', 'remark', 'address', 'closed'
+        'total_amount', 'remark', 'address', 'closed','paid_at',
+        'payment_method','payment_no'
     ];
     protected $casts = [
         'address' => 'json'

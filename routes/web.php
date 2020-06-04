@@ -17,6 +17,8 @@ Route::get('/', function () {
     return redirect()->route('products.index');
 });
 
+Route::post('alipay/notify','PaymentController@alipayNotify')->name('payment.alipay.notify');
+
 
 Route::get('products','ProductController@index')->name('products.index');
 Route::get('products/{id}','ProductController@show')->name('products.show');
@@ -31,8 +33,13 @@ Route::group(['middleware'=>['auth']],function(){
 
     Route::get('orders','OrderController@index')->name('orders.index');
     Route::get('orders/{order}','OrderController@show')->name('orders.show');
+
+    Route::get('alipay/return','PaymentController@alipayReturn')->name('payment.alipay.return');
+
+    Route::get('alipay/{order}','PaymentController@alipay')->name('payment.alipay');
 });
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+

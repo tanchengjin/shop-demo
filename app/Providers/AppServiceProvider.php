@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Yansongda\Pay\Pay;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -14,7 +15,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->singleton('alipay',function(){
+            $config=config('shop.alipay');
+            $config['notify_url']=env('ALI_NOTIFY_URL',route('payment.alipay.notify'));
+            $config['return_url']=env('ALI_RETURN_URL',route('payment.alipay.return'));
+            return Pay::alipay($config);
+        });
     }
 
     /**

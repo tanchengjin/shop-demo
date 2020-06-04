@@ -62,7 +62,7 @@
                                                                         已支付
                                                                     @else
                                                                         {{\App\Order::$refundMap[$order->refund_status]}}
-                                                                        @endif
+                                                                    @endif
                                                                 @elseif($order->closed)
                                                                     订单已关闭
                                                                 @else
@@ -77,7 +77,15 @@
                                                                 <b>￥{{number_format($order->total_amount,2)}}</b>
                                                             </td>
                                                             <td rowspan="{{count($order->item)}}" class="text-center">
-                                                                <a href="{{route('orders.show',$order->id)}}" class="btn btn-primary">查看订单</a>
+                                                                <a href="{{route('orders.show',$order->id)}}"
+                                                                   class="btn btn-primary">查看订单</a>
+                                                                @if(!$order->paid_at && !$order->closed)
+                                                                    <div style="margin-top: 10px">
+                                                                        <a target="_blank"
+                                                                           href="{{route('payment.alipay',$order->id)}}"
+                                                                           class="btn btn-success">去支付</a>
+                                                                    </div>
+                                                                @endif
                                                             </td>
                                                         @endif
                                                     </tr>
