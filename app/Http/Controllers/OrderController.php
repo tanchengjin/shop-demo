@@ -27,6 +27,7 @@ class OrderController extends Controller
 
     public function show(Order $order,Request $request)
     {
+        $this->authorize('own',$order);
         return view('orders.show',compact('order'));
     }
 }

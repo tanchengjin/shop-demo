@@ -30,10 +30,13 @@ Route::group(['middleware'=>['auth']],function(){
     Route::delete('shoppingCart/{id}','ShoppingCartController@destroy')->name('carts.destroy');
 
     Route::post('order','OrderController@store')->name('order.store');
-
+    #用户中心开始
+    #订单
     Route::get('orders','OrderController@index')->name('orders.index');
     Route::get('orders/{order}','OrderController@show')->name('orders.show');
-
+    #用户收货地址
+    Route::get('center/address','AddressController@index')->name('user.address.index');
+    #用户中心结束
     Route::get('alipay/return','PaymentController@alipayReturn')->name('payment.alipay.return');
 
     Route::get('alipay/{order}','PaymentController@alipay')->name('payment.alipay');

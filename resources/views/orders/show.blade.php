@@ -73,7 +73,7 @@
                                     @if($order->refund_status === \App\Order::$refundMap[\App\Order::REFUND_STATUS_PENDING])
                                         <span>{{\App\Order::$shipMap[$order->ship_status]}}</span>
                                     @else
-                                        <span>{{\App\Order::$refundMap[$Order->refund_status]}}</span>
+                                        <span>{{\App\Order::$refundMap[$order->refund_status]}}</span>
                                     @endif
                                 @elseif($order->closed)
                                     订单已关闭

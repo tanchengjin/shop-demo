@@ -24,9 +24,9 @@ class CreateOrdersTable extends Migration
             $table->decimal('total_amount',10,2);
             $table->string('payment_method')->nullable();
             $table->string('payment_no')->unique()->nullable();
-            $table->string('refund_status')->default(\App\Order::$refundMap[\App\Order::REFUND_STATUS_PENDING]);
+            $table->string('refund_status')->default(\App\Order::REFUND_STATUS_PENDING);
             $table->string('refund_no')->unique()->nullable();
-            $table->string('ship_status')->default(\App\Order::$shipMap[\App\Order::SHIP_STATUS_PENDING]);
+            $table->string('ship_status')->default(\App\Order::SHIP_STATUS_PENDING);
             $table->json('ship_data')->nullable();
             $table->json('extra')->nullable();
             $table->boolean('closed')->default(0);

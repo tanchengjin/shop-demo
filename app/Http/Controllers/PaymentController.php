@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Log;
 class PaymentController extends Controller
 {
     public function alipay(Order $order){
+        $this->authorize('own',$order);
 
         if($order->paid_at || $order->closed){
             return view('template.order',['msg'=>'该订单已支付或已关闭']);

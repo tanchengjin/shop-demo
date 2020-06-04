@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
+    <title>{{ config('app.name', '用户中心') }}</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
@@ -20,13 +20,22 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
-    <div id="app">
-        @include('layouts.nav')
+<div id="app">
+    @include('layouts.nav')
 
-        <main class="py-4 {{str_replace('.','-',\Illuminate\Support\Facades\Route::currentRouteName()).'-page'}}">
-            @yield('content')
-        </main>
-    </div>
+    <main class="py-4 {{str_replace('.','-',\Illuminate\Support\Facades\Route::currentRouteName()).'-page'}}">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-2">
+                    @include('layouts.user.left')
+                </div>
+                <div class="col-md-10">
+                    @yield('content')
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
 @yield('javascript')
 </body>
 </html>
