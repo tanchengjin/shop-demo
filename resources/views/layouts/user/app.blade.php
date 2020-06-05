@@ -20,7 +20,7 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
 <body>
-<div id="app">
+<div>
     @include('layouts.nav')
 
     <main class="py-4 {{str_replace('.','-',\Illuminate\Support\Facades\Route::currentRouteName()).'-page'}}">

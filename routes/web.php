@@ -30,13 +30,19 @@ Route::group(['middleware'=>['auth']],function(){
     Route::delete('shoppingCart/{id}','ShoppingCartController@destroy')->name('carts.destroy');
 
     Route::post('order','OrderController@store')->name('order.store');
-    #用户中心开始
-    #订单
+    //==============用户中心开始==================
+    #==订单==
     Route::get('orders','OrderController@index')->name('orders.index');
     Route::get('orders/{order}','OrderController@show')->name('orders.show');
-    #用户收货地址
-    Route::get('center/address','AddressController@index')->name('user.address.index');
-    #用户中心结束
+
+    #==用户收货地址==
+    Route::get('center/address','AddressController@index')->name('user.addresses.index');
+    Route::get('center/address/create','AddressController@create')->name('user.addresses.create');
+    Route::post('center/address/create','AddressController@store')->name('user.addresses.store');
+    Route::get('center/address/{address}','AddressController@edit')->name('user.addresses.edit');
+    Route::put('center/address/{address}','AddressController@update')->name('user.addresses.update');
+    Route::delete('center/address/{address}','AddressController@destroy')->name('user.addresses.destroy');
+    //==============用户中心结束==================
     Route::get('alipay/return','PaymentController@alipayReturn')->name('payment.alipay.return');
 
     Route::get('alipay/{order}','PaymentController@alipay')->name('payment.alipay');
