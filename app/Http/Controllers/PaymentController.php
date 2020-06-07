@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OrderPaid;
 use App\Order;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -45,11 +46,12 @@ class PaymentController extends Controller
                 return 'fail';
             }
 
-            if (!$order=Order::query()->where('no',$data->out_trade_no)->first()){
+            if (!$order=Order::where('no',$data->out_trade_no)->first()){
                 return 'fail';
             }
 
             if(!$order->paid_at){
+                $this->soldCount($order);
                 $order->update([
                     'paid_at'=>Carbon::now(),
                     'payment_method'=>'alipay',
@@ -61,5 +63,10 @@ class PaymentController extends Controller
             return 'error';
         }
         return app('alipay')->success();
+    }
+
+    public function soldCount(Order $order)
+    {
+        event(new OrderPaid($order));
     }
 }

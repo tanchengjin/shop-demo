@@ -14,7 +14,7 @@ return [
         // 'app_cert_public_key' => './cert/appCertPublicKey.crt', //应用公钥证书路径
         // 'alipay_root_cert' => './cert/alipayRootCert.crt', //支付宝根证书路径
         'log' => [ // optional
-            'file' => storage_path('logs/alipay/').date('Y-m-d').'.log',
+            'file' => storage_path('logs/alipay/'),
             'level' => 'debug', // 建议生产环境等级调整为 info，开发环境为 debug
 //            'type' => 'single', // optional, 可选 daily.
 //            'max_file' => 30, // optional, 当 type 为 daily 时有效，默认 30 天
