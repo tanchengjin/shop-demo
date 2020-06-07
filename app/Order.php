@@ -3,12 +3,14 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Ramsey\Uuid\Uuid;
 
 class Order extends Model
 {
     protected $fillable = [
         'total_amount', 'remark', 'address', 'closed','paid_at',
-        'payment_method','payment_no','ship_status','extra'
+        'payment_method','payment_no','ship_status','extra',
+        'refund_status','refund_no'
     ];
     protected $casts = [
         'address' => 'json',
@@ -75,5 +77,13 @@ class Order extends Model
     public function item()
     {
         return $this->hasMany(OrderItem::class, 'order_id', 'id');
+    }
+
+    public static function createRefundNo()
+    {
+        do{
+            $no=Uuid::uuid4()->getHex();
+        }while(self::query()->where('refund_no',$no)->exists());
+        return $no;
     }
 }

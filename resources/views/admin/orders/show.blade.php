@@ -53,45 +53,109 @@
                 <td>物流状态</td>
                 <td>{{\App\Order::$shipMap[$order->ship_status]}}</td>
             </tr>
-            @if($order->paid_at && $order->ship_status == \App\Order::SHIP_STATUS_PENDING)
-                <tr>
-                    <td colspan="4">
-                        <form action="{{route('admin.orders.ship',$order->id)}}" class="form-inline" method="post">
-                            {{csrf_field()}}
-                            <div class="form-group @if($errors->has('ship_company')) has-error @endif">
-                                <label for="" class="col-form-label">物流公司</label>
-                                <input type="text" name="ship_company" class="form-control">
-                                @if($errors->has('ship_company'))
-                                    @foreach($errors->get('ship_company') as $msg)
-                                        <span class="help-block">{{$msg}}</span>
-                                    @endforeach
-                                @endif
-                            </div>
-                            <div class="form-group @if($errors->has('ship_no')) has-error @endif">
-                                <label for="" class="col-form-label">物流单号</label>
-                                <input type="text" name="ship_no" class="form-control">
-                                @if($errors->has('ship_no'))
-                                    @foreach($errors->get('ship_no') as $msg)
-                                        <span class="help-block">{{$msg}}</span>
-                                    @endforeach
-                                @endif
-                            </div>
+            @if($order->paid_at)
+                @if($order->ship_status == \App\Order::SHIP_STATUS_PENDING)
+                    <tr>
+                        <td colspan="4">
+                            <form action="{{route('admin.orders.ship',$order->id)}}" class="form-inline" method="post">
+                                {{csrf_field()}}
+                                <div class="form-group @if($errors->has('ship_company')) has-error @endif">
+                                    <label for="" class="col-form-label">物流公司</label>
+                                    <input type="text" name="ship_company" class="form-control">
+                                    @if($errors->has('ship_company'))
+                                        @foreach($errors->get('ship_company') as $msg)
+                                            <span class="help-block">{{$msg}}</span>
+                                        @endforeach
+                                    @endif
+                                </div>
+                                <div class="form-group @if($errors->has('ship_no')) has-error @endif">
+                                    <label for="" class="col-form-label">物流单号</label>
+                                    <input type="text" name="ship_no" class="form-control">
+                                    @if($errors->has('ship_no'))
+                                        @foreach($errors->get('ship_no') as $msg)
+                                            <span class="help-block">{{$msg}}</span>
+                                        @endforeach
+                                    @endif
+                                </div>
 
-                            <div class="form-group">
-                                <button class="btn btn-primary">发货</button>
-                            </div>
-                        </form>
-                    </td>
-                </tr>
-            @else
-                <tr>
-                    <td>物流公司</td>
-                    <td>{{$order->extra['ship_company']}}</td>
-                    <td>物流单号</td>
-                    <td>{{$order->extra['ship_no']}}</td>
-                </tr>
+                                <div class="form-group">
+                                    <button class="btn btn-primary">发货</button>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                @else
+                    <tr>
+                        <td>物流公司</td>
+                        <td>{{$order->extra['ship_company']}}</td>
+                        <td>物流单号</td>
+                        <td>{{$order->extra['ship_no']}}</td>
+                    </tr>
+                @endif
+
+
+                @if($order->refund_status === \App\Order::REFUND_STATUS_APPLIED)
+                    <tr>
+                        <td>买家已发起退款请求</td>
+                        <td>理由</td>
+                        <td>{{$order->extra['refund_reason']}}</td>
+                        <td>
+                            <button class="btn btn-success refund_agree">同意</button>
+                            <button class="btn btn-danger refund_reject">拒绝</button>
+                        </td>
+                    </tr>
+                @endif
             @endif
             </tbody>
         </table>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        $('.refund_reject').on('click', function () {
+            swal.fire({
+                title: '请输入拒绝理由',
+                input: 'text',
+                preConfirm: function (value) {
+                    if (value) {
+                        $.ajax({
+                            url: '{{route('admin.orders.refund',$order->id)}}',
+                            method: 'post',
+                            data: JSON.stringify({
+                                agree: false,
+                                reason: value,
+                                '_token': '{{csrf_token()}}'
+                            }),
+                            contentType: 'application/json',
+                            success: function (res) {
+                                location.reload()
+                            },
+                            error: function () {
+                                swal.fire('error', '', 'error')
+                            },
+                        });
+                    }
+                }
+            });
+        });
+
+        $('.refund_agree').on('click', function () {
+            $.ajax({
+                url: '{{route('admin.orders.refund',$order->id)}}',
+                method: 'post',
+                data: JSON.stringify({
+                    agree: true,
+                    '_token': '{{csrf_token()}}'
+                }),
+                contentType: 'application/json',
+                success: function (res) {
+                    location.reload()
+                },
+                error: function () {
+                    swal.fire('error', '', 'error')
+                },
+            });
+        })
+    });
+</script>

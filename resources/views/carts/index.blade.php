@@ -151,8 +151,10 @@
                });
 
                axios.post('{{route('order.store')}}',res).then(function(res){
-                   console.log(res)
-               });
+                   location.href='{{route('orders.index')}}';
+               },function(){
+                   swal.fire('error','','error')
+                });
             });
         });
     </script>

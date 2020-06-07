@@ -30,4 +30,40 @@ class OrderController extends Controller
         $this->authorize('own',$order);
         return view('orders.show',compact('order'));
     }
+    #收货
+    public function received(Order $order)
+    {
+        $this->authorize('own',$order);
+        if(!$order->paid_at){
+            return;
+        }
+
+        $order->update([
+            'ship_status'=>Order::SHIP_STATUS_RECEIVED
+        ]);
+        return [];
+    }
+    #退款
+    public function refund(Order $order,Request $request)
+    {
+        $this->authorize('own',$order);
+
+        if(!$order->paid_at){
+            return;
+        }
+
+        $data=$this->validate($request,[
+            'reason'=>['required','min:1'],
+        ],[],[
+            'reason'=>'退款理由'
+        ]);
+
+        $extra=$order->extra?:[];
+        $extra['refund_reason']=$data['reason'];
+        $order->update([
+            'refund_status'=>Order::REFUND_STATUS_APPLIED,
+            'extra'=>$extra
+        ]);
+        return [];
+    }
 }

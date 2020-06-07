@@ -34,6 +34,8 @@ Route::group(['middleware'=>['auth']],function(){
     #==订单==
     Route::get('orders','OrderController@index')->name('orders.index');
     Route::get('orders/{order}','OrderController@show')->name('orders.show');
+    Route::post('orders/{order}/received','OrderController@received')->name('orders.received');
+    Route::post('orders/{order}/refund','OrderController@refund')->name('orders.refund');
 
     #==用户收货地址==
     Route::get('center/address','AddressController@index')->name('user.addresses.index');
@@ -44,8 +46,8 @@ Route::group(['middleware'=>['auth']],function(){
     Route::delete('center/address/{address}','AddressController@destroy')->name('user.addresses.destroy');
     //==============用户中心结束==================
     Route::get('alipay/return','PaymentController@alipayReturn')->name('payment.alipay.return');
-
     Route::get('alipay/{order}','PaymentController@alipay')->name('payment.alipay');
+    Route::post('alipay/{order}/refund','PaymentController@alipayRefund')->name('payment.alipay.refund');
 });
 
 Auth::routes();

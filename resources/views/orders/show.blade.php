@@ -60,18 +60,33 @@
                             <div class="line-key">订单备注:</div>
                             <div class="line-value">{{isset($order->remark)?:'-'}}</div>
                         </div>
+                        @if($order->ship_status === \App\Order::SHIP_STATUS_DELIVERED)
+                            <div class="line">
+                                <div>物流公司</div>
+                                <div>{{$order->extra['ship_company']}}</div>
+                            </div>
+                            <div class="line">
+                                <div>物流单号</div>
+                                <div>{{$order->extra['ship_no']}}</div>
+                            </div>
+                        @endif
                     </div>
                     <div class="order-right text-right">
                         <div class="amount">
                             <span>订单总价:</span>
                             <div class="value"><b>￥{{number_format($order->total_amount,2)}}</b></div>
                         </div>
+
                         <div>
                             <span>订单状态：</span>
                             <div class="value">
                                 @if($order->paid_at)
-                                    @if($order->refund_status === \App\Order::$refundMap[\App\Order::REFUND_STATUS_PENDING])
+                                    @if($order->refund_status === \App\Order::REFUND_STATUS_PENDING)
+                                        @if(isset($order->extra['refuse_refund_reason']))
+                                            卖家拒绝退款
+                                        @else
                                         <span>{{\App\Order::$shipMap[$order->ship_status]}}</span>
+                                        @endif
                                     @else
                                         <span>{{\App\Order::$refundMap[$order->refund_status]}}</span>
                                     @endif
@@ -82,6 +97,15 @@
                                 @endif
                             </div>
                         </div>
+
+                        @if(isset($order->extra['refuse_refund_reason']))
+                            <div>
+                                <span>理由</span>
+                                <div class="value">
+                                    {{$order->extra['refuse_refund_reason']}}
+                                </div>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
