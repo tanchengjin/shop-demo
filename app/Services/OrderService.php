@@ -66,7 +66,7 @@ class OrderService
 
             return $order;
         });
-        dispatch(new ClosedOrder($order,30));
+        dispatch(new ClosedOrder($order,config('shop.order.order_ttl')));
         return $order;
     }
 }

@@ -46,7 +46,8 @@
                                     <div class="form-group form-inline">
                                         <label>
                                             数量
-                                            <input type="text" value="1" class="form-control form-control-sm" name="amount">
+                                            <input type="text" value="1" class="form-control form-control-sm"
+                                                   name="amount">
                                         </label>
                                         <span id="stock"></span>
                                     </div>
@@ -56,7 +57,11 @@
                                         <button class="btn btn-primary" id="add_to_cart">加入购物车</button>
                                     </div>
                                     <div>
-                                        <button class="btn btn-success " id="buy">购买</button>
+                                        @if(!$favorite)
+                                            <button class="btn btn-success favorite">收藏</button>
+                                        @else
+                                            <button class="btn btn-danger disfavor">取消收藏</button>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
@@ -101,41 +106,61 @@
                 $('#stock').text('库存 ' + $(this).data('stock'))
             });
 
-            $('#add_to_cart').click(function(){
-                amount=$('input[name=amount]').val()
-                sku=$('input[name=sku]:checked').val();
+            $('#add_to_cart').click(function () {
+                amount = $('input[name=amount]').val()
+                sku = $('input[name=sku]:checked').val();
 
-                if(!sku){
-                    swal.fire('请选择商品规格','','warning');
+                if (!sku) {
+                    swal.fire('请选择商品规格', '', 'warning');
                     return;
                 }
 
-                axios.post('{{route('carts.store')}}',{
-                    'id':sku,
-                    'amount':amount
-                }).then(function(res){
+                axios.post('{{route('carts.store')}}', {
+                    'id': sku,
+                    'amount': amount
+                }).then(function (res) {
                     swal.fire({
-                        'title':'操作成功!',
-                        'text':'是否现在去支付',
-                        icon:'success',
-                        showCancelButton:true,
-                        showConfirmButton:true,
-                        cancelButtonText:'留在本页面',
-                        confirmButtonText:'去支付',
+                        'title': '操作成功!',
+                        'text': '是否现在去支付',
+                        icon: 'success',
+                        showCancelButton: true,
+                        showConfirmButton: true,
+                        cancelButtonText: '留在本页面',
+                        confirmButtonText: '去支付',
                         preConfirm(inputValue) {
-                            location.href='{{route('carts.index')}}';
+                            location.href = '{{route('carts.index')}}';
                         }
                     });
-                },function(res){
-                    if(res.response.status === 401){
-                        swal.fire('error','请先完成登录','warning').then(function(){
-                            location.href='{{route('login')}}';
+                }, function (res) {
+                    if (res.response.status === 401) {
+                        swal.fire('error', '请先完成登录', 'warning').then(function () {
+                            location.href = '{{route('login')}}';
                         })
                         return;
                     }
-                    swal.fire('error','服务器错误','error')
+                    swal.fire('error', '服务器错误', 'error')
                 })
             });
+
+            $('.favorite').on('click',function(){
+               axios.post('{{route('products.favorite',$product->id)}}').then(function(){
+                   swal.fire('success','','success');
+                   location.reload();
+
+               },function(){
+                   swal.fire('error','','error');
+               });
+            });
+
+            $('.disfavor').on('click',function(){
+                axios.delete('{{route('products.disfavor',$product->id)}}').then(function(){
+                    swal.fire('success','','success');
+                    location.reload();
+                },function(){
+                    swal.fire('error','','error');
+                });
+            });
+
         })
     </script>
 @endsection

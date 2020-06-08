@@ -20,11 +20,13 @@ Route::get('/', function () {
 Route::post('alipay/notify','PaymentController@alipayNotify')->name('payment.alipay.notify');
 
 
-Route::get('products','ProductController@index')->name('products.index');
-Route::get('products/{id}','ProductController@show')->name('products.show');
-
 //authorize..
 Route::group(['middleware'=>['auth']],function(){
+    #商品收藏
+    Route::get('products/favorites','ProductController@favorList')->name('products.favorite.index');
+    Route::post('products/{product}/favorite','ProductController@favorite')->name('products.favorite');
+    Route::delete('products/{product}/disfavor','ProductController@disfavor')->name('products.disfavor');
+    #购物车
     Route::get('shoppingCart','ShoppingCartController@index')->name('carts.index');
     Route::post('shoppingCart','ShoppingCartController@store')->name('carts.store');
     Route::delete('shoppingCart/{id}','ShoppingCartController@destroy')->name('carts.destroy');
@@ -51,6 +53,7 @@ Route::group(['middleware'=>['auth']],function(){
 });
 
 Auth::routes();
-
+Route::get('products','ProductController@index')->name('products.index');
+Route::get('products/{id}','ProductController@show')->name('products.show');
 Route::get('/home', 'HomeController@index')->name('home');
 

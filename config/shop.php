@@ -1,8 +1,8 @@
 <?php
 return [
     'order' => [
-        #order下单后有效期,秒
-        'order_ttl' => env('ORDER_TTL', 300)
+        #order下单后有效期,秒,默认半小时
+        'order_ttl' => env('ORDER_TTL', 1800)
     ],
     #支付宝支付配置
     'alipay' => [
