@@ -16,11 +16,17 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('alipay',function(){
-            $config=config('shop.alipay');
-            $config['notify_url']=env('ALI_NOTIFY_URL',route('payment.alipay.notify'));
-            $config['return_url']=env('ALI_RETURN_URL',route('payment.alipay.return'));
+        $this->app->singleton('alipay', function () {
+            $config = config('shop.alipay');
+            $config['notify_url'] = env('ALI_NOTIFY_URL', route('payment.alipay.notify'));
+            $config['return_url'] = env('ALI_RETURN_URL', route('payment.alipay.return'));
             return Pay::alipay($config);
+        });
+
+        $this->app->singleton('wechat', function () {
+            $config = config('shop.wechat');
+            $config['notify_url'] = 'http://yanda.net.cn/notify.php';
+            return Pay::wechat($config);
         });
     }
 

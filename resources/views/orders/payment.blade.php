@@ -103,7 +103,7 @@
                 method = 2
                 $('.alipay').removeClass('platform-active');
                 $(this).addClass('platform-active');
-                $('.payment').attr('href','#')
+                $('.payment').attr('href','{{route('payment.wechat',$order->id)}}')
             });
         });
     </script>

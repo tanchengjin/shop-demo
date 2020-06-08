@@ -60,6 +60,7 @@ Route::group(['middleware'=>['auth']],function(){
     #微信支付
     Route::get('wechat/{order}','PaymentController@wechat')->name('payment.wechat');
 });
+Route::post('wechat/notify','PaymentController@wechatNotify')->name('payment.wechat.notify');
 
 Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
