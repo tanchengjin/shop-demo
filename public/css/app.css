@@ -11107,3 +11107,45 @@ a.text-dark:focus {
   display: inline-block;
 }
 
+.orders-payment-page .order .order-header {
+  line-height: 50px;
+  padding: 0 30px;
+  border-left: #2bdff8 5px solid;
+}
+
+.orders-payment-page .order .order-body {
+  padding: 10px 35px;
+}
+
+.orders-payment-page .order .order-body .order-body-item {
+  margin: 2px 0;
+}
+
+.orders-payment-page #platform .platform-active {
+  border: 1px solid #da3232;
+}
+
+.orders-payment-page #platform .platform-active i {
+  height: 24px;
+  width: 27px;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  background: url("https://finance.huawei.com/cashier/web/img/select_icon.png") no-repeat;
+}
+
+.orders-payment-page #platform .alipay,
+.orders-payment-page #platform .wechat {
+  position: relative;
+  line-height: 50px;
+  text-align: center;
+}
+
+.orders-payment-page #platform .alipay img,
+.orders-payment-page #platform .wechat img {
+  max-width: 130px;
+  max-height: 50px;
+  padding: 5px;
+  margin: 0 auto;
+}
+

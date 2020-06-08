@@ -80,7 +80,7 @@
                                                     @if(!$order->paid_at && !$order->closed)
                                                         <div style="margin-top: 10px">
                                                             <a target="_blank"
-                                                               href="{{route('payment.alipay',$order->id)}}"
+                                                               href="{{route('orders.payment',$order->id)}}"
                                                                class="btn btn-success">去支付</a>
                                                         </div>
                                                     @endif

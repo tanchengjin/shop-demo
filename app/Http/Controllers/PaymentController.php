@@ -69,4 +69,9 @@ class PaymentController extends Controller
     {
         event(new OrderPaid($order));
     }
+
+    public function wechat()
+    {
+
+    }
 }

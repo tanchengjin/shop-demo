@@ -25,6 +25,12 @@ class OrderController extends Controller
         return $orderService->store($items,$address_id,$remark);
     }
 
+    #订单确认
+    public function payment(Order $order)
+    {
+        $order->load(['item','item.product','item.sku']);
+        return view('orders.payment',compact('order'));
+    }
     public function show(Order $order,Request $request)
     {
         $this->authorize('own',$order);

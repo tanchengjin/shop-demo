@@ -19,11 +19,12 @@ Route::get('/', function () {
 
 Route::post('alipay/notify','PaymentController@alipayNotify')->name('payment.alipay.notify');
 
+Route::get('products','ProductController@index')->name('products.index');
+Route::get('products/{id}','ProductController@show')->name('products.show');
 
 //authorize..
 Route::group(['middleware'=>['auth']],function(){
     #商品收藏
-    Route::get('products/favorites','ProductController@favorList')->name('products.favorite.index');
     Route::post('products/{product}/favorite','ProductController@favorite')->name('products.favorite');
     Route::delete('products/{product}/disfavor','ProductController@disfavor')->name('products.disfavor');
     #购物车
@@ -36,8 +37,12 @@ Route::group(['middleware'=>['auth']],function(){
     #==订单==
     Route::get('orders','OrderController@index')->name('orders.index');
     Route::get('orders/{order}','OrderController@show')->name('orders.show');
+    Route::get('orders/{order}/payment/confirm','OrderController@payment')->name('orders.payment');
     Route::post('orders/{order}/received','OrderController@received')->name('orders.received');
     Route::post('orders/{order}/refund','OrderController@refund')->name('orders.refund');
+
+    #收藏列表
+    Route::get('center/favorites','ProductController@favorList')->name('products.favorite.index');
 
     #==用户收货地址==
     Route::get('center/address','AddressController@index')->name('user.addresses.index');
@@ -47,13 +52,15 @@ Route::group(['middleware'=>['auth']],function(){
     Route::put('center/address/{address}','AddressController@update')->name('user.addresses.update');
     Route::delete('center/address/{address}','AddressController@destroy')->name('user.addresses.destroy');
     //==============用户中心结束==================
+    #支付宝支付
     Route::get('alipay/return','PaymentController@alipayReturn')->name('payment.alipay.return');
     Route::get('alipay/{order}','PaymentController@alipay')->name('payment.alipay');
     Route::post('alipay/{order}/refund','PaymentController@alipayRefund')->name('payment.alipay.refund');
+
+    #微信支付
+    Route::get('wechat/{order}','PaymentController@wechat')->name('payment.wechat');
 });
 
 Auth::routes();
-Route::get('products','ProductController@index')->name('products.index');
-Route::get('products/{id}','ProductController@show')->name('products.show');
 Route::get('/home', 'HomeController@index')->name('home');
 

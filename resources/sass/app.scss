@@ -181,21 +181,71 @@
         }
     }
 
-    .order-bottom{
+    .order-bottom {
         display: flex;
-        .order-info{
+
+        .order-info {
             width: 50%;
-            .line{
+
+            .line {
                 display: flex;
             }
         }
-        .order-right{
+
+        .order-right {
             width: 50%;
-            .amount{
+
+            .amount {
 
             }
-            .value{
+
+            .value {
                 display: inline-block;
+            }
+        }
+    }
+}
+
+.orders-payment-page {
+    .order {
+        .order-header {
+            line-height: 50px;
+            padding: 0 30px;
+            border-left: #2bdff8 5px solid;
+        }
+
+        .order-body {
+            padding: 10px 35px;
+
+            .order-body-item {
+                margin: 2px 0;
+            }
+        }
+    }
+
+    #platform {
+
+        .platform-active{
+            border: 1px solid #da3232;
+            i{
+                height: 24px;
+                width: 27px;
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                background: url("https://finance.huawei.com/cashier/web/img/select_icon.png") no-repeat;
+            }
+        }
+
+        .alipay, .wechat {
+            position: relative;
+            line-height: 50px;
+            text-align: center;
+            img {
+                max-width: 130px;
+                max-height: 50px;
+                padding: 5px;
+                margin: 0 auto;
             }
         }
     }
