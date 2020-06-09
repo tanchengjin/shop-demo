@@ -10,7 +10,7 @@ class Order extends Model
     protected $fillable = [
         'total_amount', 'remark', 'address', 'closed','paid_at',
         'payment_method','payment_no','ship_status','extra',
-        'refund_status','refund_no'
+        'refund_status','refund_no','reviewed'
     ];
     protected $casts = [
         'address' => 'json',

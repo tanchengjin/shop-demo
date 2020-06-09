@@ -40,6 +40,9 @@ Route::group(['middleware'=>['auth']],function(){
     Route::get('orders/{order}/payment/confirm','OrderController@payment')->name('orders.payment');
     Route::post('orders/{order}/received','OrderController@received')->name('orders.received');
     Route::post('orders/{order}/refund','OrderController@refund')->name('orders.refund');
+    Route::get('orders/{order}/review','OrderController@reviewIndex')->name('orders.review.index');
+    Route::post('orders/{order}/review','OrderController@review')->name('orders.review.store');
+
 
     #收藏列表
     Route::get('center/favorites','ProductController@favorList')->name('products.favorite.index');
@@ -59,6 +62,7 @@ Route::group(['middleware'=>['auth']],function(){
 
     #微信支付
     Route::get('wechat/{order}','PaymentController@wechat')->name('payment.wechat');
+
 });
 Route::post('wechat/notify','PaymentController@wechatNotify')->name('payment.wechat.notify');
 

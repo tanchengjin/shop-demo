@@ -96,6 +96,12 @@
                                                                 <button class="btn btn-danger refund">发起退款</button>
                                                             </div>
                                                         @endif
+
+                                                        @if($order->ship_status === \App\Order::SHIP_STATUS_RECEIVED)
+                                                            <div style="margin-top: 10px">
+                                                                <a class="btn btn-success" href="{{route('orders.review.index',$order->id)}}">发起评价</a>
+                                                            </div>
+                                                        @endif
                                                     @endif
                                                 </td>
                                             @endif

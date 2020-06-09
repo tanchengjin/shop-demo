@@ -225,9 +225,10 @@
 
     #platform {
 
-        .platform-active{
+        .platform-active {
             border: 1px solid #da3232;
-            i{
+
+            i {
                 height: 24px;
                 width: 27px;
                 position: absolute;
@@ -241,6 +242,7 @@
             position: relative;
             line-height: 50px;
             text-align: center;
+
             img {
                 max-width: 130px;
                 max-height: 50px;
@@ -249,4 +251,7 @@
             }
         }
     }
+}
+
+.orders-review-index-page {
 }

@@ -9,7 +9,7 @@ class Product extends Model
     protected $fillable = [
         'title', 'description', 'min_price',
         'max_price', 'sold_count', 'review_count',
-        'image', 'on_sale',
+        'image', 'on_sale','rating'
     ];
 
     public function sku()
