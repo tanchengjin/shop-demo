@@ -98,10 +98,10 @@ class ProductController extends AdminController
         $form = new Form(new Product());
 
         $form->number('category_id', __('分类'));
-        $form->text('title', __('标题'));
-        $form->image('image', __('图片'));
+        $form->text('title', __('标题'))->required();
+        $form->cropper('image', __('图片'))->cRatio(350,350)->required();
 
-        $form->UEditor('description', __('描述'));
+        $form->UEditor('description', __('描述'))->required();
         $form->display('sold_count', __('销量'));
         $form->display('review_count', __('评价数量'));
         $form->switch('on_sale', __('状态'))->states([
