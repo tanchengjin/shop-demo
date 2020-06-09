@@ -5,7 +5,7 @@
             <div class="card-body">
                 <div class="product">
                     <div class="row">
-                        <div class="col-md-4">
+                        <div class="col-md-4 product-image">
                             <img src="{{$product->image}}" alt="">
                         </div>
                         <div class="col-md-8">
@@ -68,7 +68,7 @@
                         </div>
                     </div>
                 </div>
-                <ul class="nav nav-tabs">
+                <ul class="nav nav-tabs" style="margin-top: 30px">
                     <li class="nav-item">
                         <a href="#description" data-toggle="tab" class="nav-link active">商品详情</a>
                     </li>
@@ -79,7 +79,9 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="description">
                         <div class="container">
-                            {{$product->description}}
+                            <div class="product-description m-auto">
+                                {!! $product->description !!}
+                            </div>
                         </div>
                     </div>
                     <div class="tab-pane" id="review">
@@ -87,7 +89,26 @@
                             @if($product->review_count == 0)
                                 暂无评价
                             @else
-                                $product->review_count
+                                @foreach($reviews as $review)
+                                    <table class="table table-bordered table-striped" style="margin-top: 10px">
+                                        <tbody>
+                                        <tr>
+                                            <th>用户</th>
+                                            <th>商品</th>
+                                            <th>评价内容</th>
+                                            <th>评分</th>
+                                            <th>评论时间</th>
+                                        </tr>
+                                        <tr>
+                                            <td>{{$review->order->user->name}}</td>
+                                            <td>{{$review->product->title}}</td>
+                                            <td>{{$review->review}}</td>
+                                            <td>{{$review->rating}}</td>
+                                            <td>{{date('Y-m-d',strtotime($review->reviewed_at))}}</td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                @endforeach
                             @endif
                         </div>
                     </div>
@@ -142,22 +163,22 @@
                 })
             });
 
-            $('.favorite').on('click',function(){
-               axios.post('{{route('products.favorite',$product->id)}}').then(function(){
-                   swal.fire('success','','success');
-                   location.reload();
+            $('.favorite').on('click', function () {
+                axios.post('{{route('products.favorite',$product->id)}}').then(function () {
+                    swal.fire('success', '', 'success');
+                    location.reload();
 
-               },function(){
-                   swal.fire('error','','error');
-               });
+                }, function () {
+                    swal.fire('error', '', 'error');
+                });
             });
 
-            $('.disfavor').on('click',function(){
-                axios.delete('{{route('products.disfavor',$product->id)}}').then(function(){
-                    swal.fire('success','','success');
+            $('.disfavor').on('click', function () {
+                axios.delete('{{route('products.disfavor',$product->id)}}').then(function () {
+                    swal.fire('success', '', 'success');
                     location.reload();
-                },function(){
-                    swal.fire('error','','error');
+                }, function () {
+                    swal.fire('error', '', 'error');
                 });
             });
 

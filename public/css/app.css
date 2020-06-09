@@ -10979,6 +10979,17 @@ a.text-dark:focus {
   color: #a79df8;
 }
 
+.products-show-page .product-image {
+  border: 1px solid #eee;
+  height: 350px;
+  width: 350px;
+}
+
+.products-show-page .product-image img {
+  width: 100%;
+  height: 100%;
+}
+
 .products-show-page .title {
   font-size: 23px;
 }
@@ -11018,6 +11029,14 @@ a.text-dark:focus {
 
 .products-show-page .product-detail .buttons > div:first-child {
   margin-right: 30px;
+}
+
+.products-show-page .product-description {
+  width: 790px;
+}
+
+.products-show-page .product-description img {
+  width: 100%;
 }
 
 .carts-index-page .amount {

@@ -44,7 +44,7 @@
             'simpleupload', 'insertimage', 'emotion', 'scrawl', 'insertvideo', 'music', 'attachment', 'map', 'gmap', 'insertframe', 'insertcode', 'webapp', 'pagebreak', 'template', 'background', '|',
             'horizontal', 'date', 'time', 'spechars', 'snapscreen', 'wordimage', '|',
             'inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol', 'mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', 'charts', '|',
-            'print', 'preview', 'searchreplace', 'help', 'drafts'
+            'print', 'preview', 'searchreplace', 'help', 'drafts', 'wordimage'
         ]]
         //当鼠标放在工具栏上时显示的tooltip提示,留空支持自动多语言配置，否则以配置值为准
         //,labelMap:{
@@ -355,7 +355,7 @@
 
         var configPath = document.getElementsByTagName('script');
 
-        return configPath[ configPath.length - 1 ].src;
+        return configPath[configPath.length - 1].src;
 
     }
 
@@ -382,7 +382,7 @@
 
     function optimizationPath(path) {
 
-        var protocol = /^[a-z]+:\/\//.exec(path)[ 0 ],
+        var protocol = /^[a-z]+:\/\//.exec(path)[0],
             tmp = null,
             res = [];
 
@@ -390,11 +390,11 @@
 
         path = path.replace(/\\/g, '/').split(/\//);
 
-        path[ path.length - 1 ] = "";
+        path[path.length - 1] = "";
 
         while (path.length) {
 
-            if (( tmp = path.shift() ) === "..") {
+            if ((tmp = path.shift()) === "..") {
                 res.pop();
             } else if (tmp !== ".") {
                 res.push(tmp);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\OrderItem;
 use App\Product;
 use Illuminate\Http\Request;
 
@@ -20,7 +21,12 @@ class ProductController extends Controller
             ->with(['sku'])
             ->find($id);
         $favorite=$request->user()->favorites()->find($product->id)?true:false;
-        return view('products.show',compact('product','favorite'));
+        $reviews=OrderItem::query()->with(['product','sku','order.user'])
+            ->where('product_id',$id)
+            ->whereNotNull('reviewed_at')
+            ->orderBy('reviewed_at','desc')
+            ->get();
+        return view('products.show',compact('product','favorite','reviews'));
     }
     #商品收藏
     public function favorite(Product $product,Request $request)

@@ -16,4 +16,13 @@ class Product extends Model
     {
         return $this->hasMany(ProductSku::class,'product_id','id');
     }
+
+    public function getImageAttribute($image)
+    {
+        $prefix=substr($image,0,4);
+        if($prefix !== 'http'){
+            return '/storage/'.$image;
+        }
+        return $image;
+    }
 }

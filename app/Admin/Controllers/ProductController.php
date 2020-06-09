@@ -25,7 +25,7 @@ class ProductController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new Product());
-
+        $grid->model()->orderBy('id','desc');
         $grid->column('id', __('Id'));
         $grid->column('category_id', __('Category id'));
         $grid->column('title', __('商品名'));
@@ -58,7 +58,6 @@ class ProductController extends AdminController
             }
         });
         $grid->column('created_at', __('创建时间'))->date('Y-m-d H:i')->sortable();
-//        $grid->column('updated_at', __('Updated at'));
 
         return $grid;
     }
@@ -100,8 +99,9 @@ class ProductController extends AdminController
 
         $form->number('category_id', __('分类'));
         $form->text('title', __('标题'));
-        $form->UEditor('description', __('描述'));
         $form->image('image', __('图片'));
+
+        $form->UEditor('description', __('描述'));
         $form->display('sold_count', __('销量'));
         $form->display('review_count', __('评价数量'));
         $form->switch('on_sale', __('状态'))->states([
@@ -111,9 +111,16 @@ class ProductController extends AdminController
         $form->hasMany('sku',function(Form\NestedForm $form){
             $form->text('title','标题')->required();
             $form->decimal('price','价格')->required();
-            $form->number('stock','库存')->required();
+            $form->number('stock','库存')->required()->default(1);
             $form->textarea('description','描述');
         });
+
+        $form->saving(function(Form $form){
+            $form->model()->min_price=collect($form->input('sku'))->where(Form::REMOVE_FLAG_NAME,0)->min('price')?:0;
+            $form->model()->max_price=collect($form->input('sku'))->where(Form::REMOVE_FLAG_NAME,0)->max('price')?:0;
+        });
+
         return $form;
     }
+
 }

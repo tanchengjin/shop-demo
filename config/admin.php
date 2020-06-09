@@ -399,7 +399,8 @@ return [
         'ueditor'=>[
             'enable'=>true,
             'config'=>[
-                'initialFrameHeight'=>400
+                'initialFrameHeight'=>400,
+                'imageMaxSize'=>30000000
             ],
         ],
     ],
