@@ -100,7 +100,7 @@ class ProductController extends AdminController
 
         $form->number('category_id', __('分类'));
         $form->text('title', __('标题'));
-        $form->textarea('description', __('描述'));
+        $form->UEditor('description', __('描述'));
         $form->image('image', __('图片'));
         $form->display('sold_count', __('销量'));
         $form->display('review_count', __('评价数量'));

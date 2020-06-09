@@ -396,6 +396,11 @@ return [
     |
     */
     'extensions' => [
-
+        'ueditor'=>[
+            'enable'=>true,
+            'config'=>[
+                'initialFrameHeight'=>400
+            ],
+        ],
     ],
 ];
