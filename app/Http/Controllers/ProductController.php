@@ -20,7 +20,10 @@ class ProductController extends Controller
             ->where('on_sale',1)
             ->with(['sku'])
             ->find($id);
-        $favorite=$request->user()->favorites()->find($product->id)?true:false;
+        $favorite=false;
+        if($request->user()){
+            $favorite=$request->user()->favorites()->find($product->id);
+        }
         $reviews=OrderItem::query()->with(['product','sku','order.user'])
             ->where('product_id',$id)
             ->whereNotNull('reviewed_at')
