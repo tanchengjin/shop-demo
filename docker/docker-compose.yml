@@ -20,13 +20,13 @@ services:
     working_dir: /usr/share/nginx/html
     volumes:
       #html文件
-      - ../:/usr/share/nginx/html/blog
+      - ../:/usr/share/nginx/html/shop
       #配置文件
       - ./nginx/conf.d:/etc/nginx/conf.d
       #日志文件
-      - /var/log/nginx:/var/log/nginx
+      - ./nginx/log:/var/log/nginx
       #文件共享
-      - ../storage/app/public:/usr/share/nginx/html/blog/public/storage
+      - ../storage/app/public:/usr/share/nginx/html/project/public/storage
     privileged: true
     restart: always
   redis:
@@ -50,7 +50,11 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: ?VcbUeQ+.
       MYSQL_ROOT_USER: root
+      MYSQL_DATABASE: shop
     #使用旧密码验证
     command: --default-authentication-plugin=mysql_native_password
     privileged: true
     restart: always
+    volumes:
+      #数据备份
+      - ./mysql/data:/var/lib/mysql

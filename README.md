@@ -1,6 +1,52 @@
 # PHP开源商城
 
-安装
+PHP>=7.2.5\
+Laravel框架开发
+
+
+## 安装
+
+1、docker安装
+进入docker目录执行如下命令进行安装
+````
+docker-compose up [-d 可选参数用于后台执行]
+````
+
+安装依赖包
+````
+docker exec -it shop-php composer install
+````
+生成key
+````
+docker exec -it shop-php php artisan key:generate
+````
+配置目录权限
+````
+docker exec -it shop-php chmod 777 -R storage
+````
+数据填充
+````
+docker exec -it shop-php php artisan shop:install
+````
+启动队列
+````
+docker exec -it shop-php php artisan queue:work
+````
+2、普通安装
+
+安装依赖包
+````
+composer install
+````
+生成key
+````
+php artisan key:generate
+````
+
+配置目录权限
+`确保storage目录有777权限` 
+
+数据填充
 ````
 php artisan shop:install
 ````

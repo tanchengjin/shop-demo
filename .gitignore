@@ -13,3 +13,5 @@ yarn-error.log
 .idea/
 resources/wechat
 docker/redis/data/*
+docker/nginx/log/
+docker/mysql/data

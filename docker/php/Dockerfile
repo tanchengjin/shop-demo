@@ -11,6 +11,6 @@ RUN apt-get install unzip libpng-dev -y
 #RUN php -r "unlink('composer-setup.php');"
 #RUN mv  composer.phar /usr/bin/composer
 #RUN composer config -g repos.packagist composer https://mirrors.cloud.tencent.com/composer/
-RUN docker-php-ext-install pdo_mysql gd
+RUN docker-php-ext-install pdo_mysql gd bcmath
 RUN pecl install redis -y
 RUN docker-php-ext-enable redis
