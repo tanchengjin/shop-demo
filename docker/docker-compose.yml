@@ -1,0 +1,56 @@
+version: "2"
+services:
+  php:
+    container_name: shop-php
+    build: ./php
+    working_dir: /home
+    ports:
+      - 9000:9000
+    volumes:
+      - ../:/home
+    #            - ../storage/app/public/ueditor:/home/public/storage/ueditor
+    privileged: true
+    restart: always
+  nginx:
+    container_name: shop-nginx
+    image: nginx:latest
+    ports:
+      - 80:80
+      - 443:443
+    working_dir: /usr/share/nginx/html
+    volumes:
+      #html文件
+      - ../:/usr/share/nginx/html/blog
+      #配置文件
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      #日志文件
+      - /var/log/nginx:/var/log/nginx
+      #文件共享
+      - ../storage/app/public:/usr/share/nginx/html/blog/public/storage
+    privileged: true
+    restart: always
+  redis:
+    container_name: shop-redis
+    image: redis:latest
+    ports:
+      - 6379:6379
+    volumes:
+      #数据备份
+      - ./redis/data:/data
+      #redis配置文件
+      - ./redis/conf.d:/etc/redis
+    command: redis-server /etc/redis/redis.conf
+    restart: always
+    privileged: true
+  mysql:
+    container_name: shop-mysql
+    image: mysql:latest
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: ?VcbUeQ+.
+      MYSQL_ROOT_USER: root
+    #使用旧密码验证
+    command: --default-authentication-plugin=mysql_native_password
+    privileged: true
+    restart: always
