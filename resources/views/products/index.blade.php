@@ -56,7 +56,7 @@
                     </div>
                 </div>
                 <div class="float-right">
-                    {{$products->render()}}
+                    {{$products->appends($data)->render()}}
                 </div>
             </div>
         </div>

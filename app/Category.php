@@ -38,7 +38,7 @@ class Category extends Model
             $categories = Category::query()->get();
         }
 
-        $categoryData=$categories->where('parent_id', $parent_id)->map(function (Category $category) use ($categories) {
+        $categoryData = $categories->where('parent_id', $parent_id)->map(function (Category $category) use ($categories) {
             $data = ['id' => $category->id, 'name' => $category->name];
             if (!$category->is_directory) {
                 return $data;
@@ -48,5 +48,16 @@ class Category extends Model
         });
 
         return $categoryData;
+    }
+    #拆分path
+    public function getPathIdsAttribute()
+    {
+        return array_filter(explode('-',trim($this->path,'-')));
+    }
+
+    #获取当前数据的所有上级id
+    public function getAncestorAttribute($value)
+    {
+        dd($value);
     }
 }

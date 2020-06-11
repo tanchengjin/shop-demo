@@ -12,10 +12,24 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $product = Product::query()->where('on_sale', 1);
+
         $data = [
             'search' => '',
             'order' => ''
         ];
+
+        #分类
+        if ($request->input('category_id', '') && $category = Category::query()->find($request->input('category_id'))) {
+            if ($category->is_directory) {
+                $product->whereHas('categories',function($query) use($category){
+                    $like=$category->path.$category->id.'-%';
+                    $query->where('path','like',$like);
+                });
+            } else {
+                $product->where('category_id', $request->input('category_id'));
+            }
+        }
+        #搜索
         if ($search = $request->input('q', '')) {
             $product->where(function ($query) use ($search) {
                 $like = '%' . $search . '%';
@@ -28,7 +42,7 @@ class ProductController extends Controller
             });
             $data['search'] = $search;
         }
-
+        #排序
         if ($order = $request->input('order', '')) {
             $data['order'] = $order;
             preg_match('/^(.+)_(asc|desc)$/', $order, $m);
@@ -51,8 +65,8 @@ class ProductController extends Controller
 
         }
         $products = $product->paginate(16);
-        $categoryTree=Category::categoryTree();
-        return view('products.index', compact(['products', 'data','categoryTree']));
+        $categoryTree = Category::categoryTree();
+        return view('products.index', compact(['products', 'data', 'categoryTree']));
     }
 
     public function show($id, Request $request)
