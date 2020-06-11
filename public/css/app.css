@@ -10979,6 +10979,10 @@ a.text-dark:focus {
   color: #a79df8;
 }
 
+.products-index-page .form-search {
+  margin-bottom: 20px;
+}
+
 .products-show-page .product-image {
   height: 350px;
   width: 350px;
