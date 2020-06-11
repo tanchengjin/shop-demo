@@ -11171,3 +11171,17 @@ a.text-dark:focus {
   margin: 0 auto;
 }
 
+.category a {
+  line-height: 30px;
+  padding: 5px;
+}
+
+.category .dropdown-submenu > .dropdown-menu {
+  top: 0;
+  left: 100%;
+}
+
+.category .dropdown-submenu:hover > .dropdown-menu {
+  display: block;
+}
+

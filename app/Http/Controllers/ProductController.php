@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Category;
 use App\OrderItem;
 use App\Product;
 use Illuminate\Http\Request;
@@ -50,8 +51,8 @@ class ProductController extends Controller
 
         }
         $products = $product->paginate(16);
-
-        return view('products.index', compact(['products', 'data']));
+        $categoryTree=Category::categoryTree();
+        return view('products.index', compact(['products', 'data','categoryTree']));
     }
 
     public function show($id, Request $request)
