@@ -16,13 +16,17 @@ class AdminMenuSeeder extends Seeder
                 'title' => '商品管理',
                 'icon' => 'fa-bars',
                 'uri' => 'products'
-            ],[
-                'title'=>'订单管理',
-                'icon'=>'fa-bars',
-                'uri'=>'orders'
-            ]
+            ], [
+                'title' => '订单管理',
+                'icon' => 'fa-bars',
+                'uri' => 'orders'
+            ], [
+                'title' => '分类管理',
+                'icon' => 'fa-bars',
+                'uri' => 'categories'
+            ],
         ];
-        foreach ($menus as $index=>$menu) {
+        foreach ($menus as $index => $menu) {
             if (\App\AdminMenu::query()->where('title', $menu['title'])->exists()) {
                 continue;
             } else {

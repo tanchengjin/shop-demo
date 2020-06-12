@@ -29,7 +29,7 @@
                                             <td>
                                                 <div class="product-info">
                                                     <div class="image">
-                                                        <img src="{{$item->product->image}}" alt="">
+                                                        <img src="{{$item->product->full_image}}" alt="">
                                                     </div>
                                                     <div id="info">
                                                         <div class="product-title">

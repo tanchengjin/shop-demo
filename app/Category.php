@@ -24,7 +24,7 @@ class Category extends Model
 
     public function parent()
     {
-        return $this->belongsTo(category::class, 'parent_id', 'id');
+        return $this->belongsTo(category::class);
     }
 
     public function children()
@@ -58,6 +58,17 @@ class Category extends Model
     #获取当前数据的所有上级id
     public function getAncestorAttribute($value)
     {
-        dd($value);
+        return Category::query()->where('id',$this->pathIds)->orderBy('level')->get();
+    }
+
+    public function getFullNameAttribute()
+    {
+        if($this->path === '-'){
+            return $this->name;
+        }
+        return $this->ancestor
+            ->pluck('name')
+            ->push($this->name)
+            ->implode('-');
     }
 }

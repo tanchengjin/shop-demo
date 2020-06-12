@@ -38,7 +38,7 @@
                                     <div class="top">
                                         <div>
                                             <a href="{{route('products.show',$product->id)}}">
-                                                <img src="{{$product->image}}" alt="{{$product->title}}">
+                                                <img src="{{$product->full_image}}" alt="{{$product->title}}">
                                             </a>
                                         </div>
                                         <div class="price">￥{{$product->min_price}}</div>

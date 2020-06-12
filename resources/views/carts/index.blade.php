@@ -23,7 +23,7 @@
                                 <td>
                                     <div class="product-info {{$cart->sku->product->on_sale?'':'not_sale'}}">
                                         <div class="image">
-                                            <img src="{{$cart->sku->product->image}}" alt="">
+                                            <img src="{{$cart->sku->product->full_image}}" alt="">
                                         </div>
                                         <div class="product-detail">
                                             <div class="product-title">

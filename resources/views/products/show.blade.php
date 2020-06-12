@@ -6,7 +6,7 @@
                 <div class="product">
                     <div class="row">
                         <div class="col-md-4 product-image">
-                            <img src="{{$product->image}}" alt="">
+                            <img src="{{$product->full_image}}" alt="">
                         </div>
                         <div class="col-md-8">
                             <div class="product-detail">

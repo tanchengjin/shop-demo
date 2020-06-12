@@ -3,9 +3,11 @@
 namespace App\Admin\Controllers;
 
 use App\Product;
+use Encore\Admin\Admin;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
+use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
 
 class ProductController extends AdminController
@@ -25,35 +27,35 @@ class ProductController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new Product());
-        $grid->model()->orderBy('id','desc');
+        $grid->model()->orderBy('id', 'desc');
         $grid->column('id', __('Id'));
         $grid->column('category_id', __('Category id'));
         $grid->column('title', __('商品名'));
         $grid->column('image', __('图片'));
-        $grid->column('min_price', __('最低价'))->display(function($value){
-            return '￥'.number_format($value,2);
+        $grid->column('min_price', __('最低价'))->display(function ($value) {
+            return '￥' . number_format($value, 2);
         })->sortable();
-        $grid->column('max_price', __('最高价'))->display(function($value){
-            return '￥'.number_format($value,2);
+        $grid->column('max_price', __('最高价'))->display(function ($value) {
+            return '￥' . number_format($value, 2);
         })->sortable();
-        $grid->column('sold_count', __('销量'))->display(function($value){
-            if($value == 0){
+        $grid->column('sold_count', __('销量'))->display(function ($value) {
+            if ($value == 0) {
                 return '暂无';
-            }else{
+            } else {
                 return $value;
             }
         })->sortable();
 
-        $grid->column('review_count', __('评价数'))->display(function($value){
-            if($value == 0){
+        $grid->column('review_count', __('评价数'))->display(function ($value) {
+            if ($value == 0) {
                 return '暂无';
             }
             return $value;
         })->sortable();
-        $grid->column('on_sale', __('状态'))->display(function($value){
-            if($value == 1){
+        $grid->column('on_sale', __('状态'))->display(function ($value) {
+            if ($value == 1) {
                 return '在售';
-            }else{
+            } else {
                 return '下架';
             }
         });
@@ -88,36 +90,48 @@ class ProductController extends AdminController
         return $show;
     }
 
+    public function edit($id, Content $content)
+    {
+        return $content->header('编辑')->body($this->form(true)->edit($id));
+    }
+
     /**
      * Make a form builder.
      *
+     * @param bool $edit
      * @return Form
      */
-    protected function form()
+    protected function form($isEdit = false)
     {
         $form = new Form(new Product());
 
+
         $form->number('category_id', __('分类'));
         $form->text('title', __('标题'))->required();
-        $form->cropper('image', __('图片'))->cRatio(350,350)->required();
+        if($isEdit){
+            $form->cropper('image', __('图片'))->cRatio(350, 350);
+
+        }else{
+            $form->cropper('image', __('图片'))->cRatio(350, 350)->required();
+        }
+
 
         $form->UEditor('description', __('描述'))->required();
         $form->display('sold_count', __('销量'));
         $form->display('review_count', __('评价数量'));
         $form->switch('on_sale', __('状态'))->states([
-            'on'=>['value'=>1,'text'=>'上架','color=success'],
-            'off'=>['value'=>0,'text'=>'下架','color=danger']
+            'on' => ['value' => 1, 'text' => '上架', 'color=success'],
+            'off' => ['value' => 0, 'text' => '下架', 'color=danger']
         ])->default(1);
-        $form->hasMany('sku',function(Form\NestedForm $form){
-            $form->text('title','标题')->required();
-            $form->decimal('price','价格')->required();
-            $form->number('stock','库存')->required()->default(1);
-            $form->textarea('description','描述');
+        $form->hasMany('sku', function (Form\NestedForm $form) {
+            $form->text('title', '标题')->required();
+            $form->decimal('price', '价格')->required();
+            $form->number('stock', '库存')->required()->default(1);
+            $form->textarea('description', '描述');
         });
-
-        $form->saving(function(Form $form){
-            $form->model()->min_price=collect($form->input('sku'))->where(Form::REMOVE_FLAG_NAME,0)->min('price')?:0;
-            $form->model()->max_price=collect($form->input('sku'))->where(Form::REMOVE_FLAG_NAME,0)->max('price')?:0;
+        $form->saving(function (Form $form) {
+            $form->model()->min_price = collect($form->input('sku'))->where(Form::REMOVE_FLAG_NAME, 0)->min('price') ?: 0;
+            $form->model()->max_price = collect($form->input('sku'))->where(Form::REMOVE_FLAG_NAME, 0)->max('price') ?: 0;
         });
 
         return $form;
