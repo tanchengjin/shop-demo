@@ -1,7 +1,9 @@
 # PHP开源商城
 
+[效果浏览](#浏览效果)
+
 PHP>=7.2.5\
-Laravel框架开发
+Laravel7\
 
 
 ## 安装
@@ -81,3 +83,25 @@ WeCHAT_KEY= API 密钥
 WECHAT_CERT=cert文件完整文件名
 WECHAT_CERT_KEY=文件完整文件名
 ````
+
+
+# 浏览效果
+
+首页
+![avatar](http://qbniinxdj.bkt.clouddn.com/product-index.png)
+
+详情页
+![avatar](http://qbniinxdj.bkt.clouddn.com/product-detail.png)
+
+购物车
+![avatar](http://qbniinxdj.bkt.clouddn.com/product-cart.png)
+
+分类
+![avatar](http://qbniinxdj.bkt.clouddn.com/product-category.png)
+
+订单
+![avatar](http://qbniinxdj.bkt.clouddn.com/product-category.png)
+订单支付
+![avatar](http://qbniinxdj.bkt.clouddn.com/product-payment.png)
+
+

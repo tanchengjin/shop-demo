@@ -10983,6 +10983,10 @@ a.text-dark:focus {
   margin-bottom: 20px;
 }
 
+.products-show-page .skus label {
+  padding: 0 10px;
+}
+
 .products-show-page .product-image {
   height: 350px;
   width: 350px;
@@ -11024,6 +11028,10 @@ a.text-dark:focus {
 
 .products-show-page .amount {
   margin: 5px 0;
+}
+
+.products-show-page .amount input {
+  margin-left: 10px;
 }
 
 .products-show-page .product-detail {

@@ -67,6 +67,11 @@
 }
 
 .products-show-page {
+    .skus{
+        label{
+            padding: 0 10px;
+        }
+    }
     .product-image{
         height:350px;
         width: 350px;
@@ -106,6 +111,9 @@
 
     .amount {
         margin: 5px 0;
+        input{
+            margin-left: 10px;
+        }
     }
 
     .product-detail {
