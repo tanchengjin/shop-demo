@@ -105,6 +105,8 @@ WECHAT_CERT_KEY=文件完整文件名
 购物车
 ![avatar](images/product-cart.png)
 
+收货地址
+![avatar](images/address.png)
 分类
 ![avatar](images/product-category.png)
 
