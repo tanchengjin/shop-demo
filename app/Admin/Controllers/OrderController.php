@@ -4,6 +4,7 @@ namespace App\Admin\Controllers;
 
 use App\Http\Requests\HandleRefundRequest;
 use App\Order;
+use Encore\Admin\Actions\Action;
 use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
@@ -46,29 +47,44 @@ class OrderController extends AdminController
                 return $value;
             }
         });
-        $grid->column('refund_status', __('退款状态'));
-        $grid->column('ship_status', __('物流状态'))->display(function ($value) {
-            return Order::$shipMap[$value];
-        });
-        $grid->column('closed', __('订单状态'))->display(function ($value) {
-            if ($value === 1) {
-                return '订单已关闭';
-            } else {
-                return '待付款';
-            }
-        })->filter([
-            1 => '订单关闭',
-            0 => '订单未关闭'
-        ]);
+
         $grid->column('created_at', __('创建时间'))->date('Y-m-d H:i')->filter('range', 'date')->sortable();
-        $grid->column('paid_at', __('付款时间'))->display(function ($value) {
-            if (!is_null($value)) {
-                return date('Y-m-d H:i:s', strtotime($value));
-            } else {
-                return '待付款';
+
+        $grid->column('reviewed','评价状态')->display(function($reviewed){
+            return $reviewed?'已评价':'未评价';
+        });
+        $grid->column('id', '订单状态')->display(function ($id) {
+            $order = Order::query()->find($id);
+            if ($order) {
+                if ($order->paid_at) {
+                    if ($order->refund_status !== 'pending') {
+                        return "<span class='label label-danger'>" . Order::$refundMap[$order->refund_status] . "</span>";
+                    }
+
+                    if ($order->ship_status === 'pending') {
+                        return "<span class='label label-danger'>" . Order::$shipMap[$order->ship_status] . "</span>";
+                    }else{
+                        return "<span class='label label-info'>" . Order::$shipMap[$order->ship_status] . "</span>";
+                    }
+
+                } elseif ($order->closed) {
+                    return "<span class='label label-warning'>已关闭</span>";
+                } else {
+                    return '待付款';
+                }
             }
+            return '未知错误';
         });
 
+        $grid->actions(function($action){
+            $action->disableDelete();
+            $action->disableEdit();
+        });
+        $grid->tools(function ($tools) {
+            $tools->batch(function ($batch) {
+                $batch->disableDelete();
+            });
+        });
         return $grid;
     }
 
@@ -183,7 +199,7 @@ class OrderController extends AdminController
                     $extra = $order->extra ?: [];
                     $extra['alipay_refund_fail_code'] = $res->sub_code;
                     $order->update([
-                        'refund_no'=>$no,
+                        'refund_no' => $no,
                         'extra' => $extra,
                         'refund_status' => Order::REFUND_STATUS_FAILED,
                     ]);

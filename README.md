@@ -88,20 +88,26 @@ WECHAT_CERT_KEY=文件完整文件名
 # 浏览效果
 
 首页
-![avatar](http://qbniinxdj.bkt.clouddn.com/product-index.png)
+![avatar](images/product-index.png)
 
 详情页
-![avatar](http://qbniinxdj.bkt.clouddn.com/product-detail.png)
+![avatar](images/product-detail.png)
 
 购物车
-![avatar](http://qbniinxdj.bkt.clouddn.com/product-cart.png)
+![avatar](images/product-cart.png)
 
 分类
-![avatar](http://qbniinxdj.bkt.clouddn.com/product-category.png)
+![avatar](images/product-category.png)
 
 订单
-![avatar](http://qbniinxdj.bkt.clouddn.com/product-category.png)
+![avatar](images/product-category.png)
 订单支付
-![avatar](http://qbniinxdj.bkt.clouddn.com/product-payment.png)
+![avatar](images/product-payment.png)
+
+后台，商品、订单、分类等
+![avatar](images/admin-product.png)
+![avatar](images/admin-product-recycle.png)
+![avatar](images/admin-order.png)
+
 
 

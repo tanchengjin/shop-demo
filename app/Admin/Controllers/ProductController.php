@@ -2,6 +2,7 @@
 
 namespace App\Admin\Controllers;
 
+use App\Admin\Actions\Restore;
 use App\Product;
 use Encore\Admin\Admin;
 use Encore\Admin\Controllers\AdminController;
@@ -27,11 +28,13 @@ class ProductController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new Product());
-        $grid->model()->orderBy('id', 'desc');
-        $grid->column('id', __('Id'));
-        $grid->column('category_id', __('Category id'));
+        $grid->filter(function ($filter) {
+            $filter->scope('trashed', '回收站')->onlyTrashed();
+        });
+        $grid->column('image', __('图片'))->image('',90,90);
+
+        $grid->column('categories.name', __('分类'));
         $grid->column('title', __('商品名'));
-        $grid->column('image', __('图片'));
         $grid->column('min_price', __('最低价'))->display(function ($value) {
             return '￥' . number_format($value, 2);
         })->sortable();
@@ -53,6 +56,9 @@ class ProductController extends AdminController
             return $value;
         })->sortable();
         $grid->column('on_sale', __('状态'))->display(function ($value) {
+            if (!is_null($this->deleted_at)) {
+                return '已删除';
+            }
             if ($value == 1) {
                 return '在售';
             } else {
@@ -60,7 +66,12 @@ class ProductController extends AdminController
             }
         });
         $grid->column('created_at', __('创建时间'))->date('Y-m-d H:i')->sortable();
+        $grid->actions(function($actions){
+            if(request('_scope_') == 'trashed'){
+                $actions->add(new Restore());
+            }
 
+        });
         return $grid;
     }
 
@@ -108,10 +119,10 @@ class ProductController extends AdminController
 
         $form->number('category_id', __('分类'));
         $form->text('title', __('标题'))->required();
-        if($isEdit){
+        if ($isEdit) {
             $form->cropper('image', __('图片'))->cRatio(350, 350);
 
-        }else{
+        } else {
             $form->cropper('image', __('图片'))->cRatio(350, 350)->required();
         }
 

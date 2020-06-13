@@ -29,11 +29,11 @@ class Order extends Model
     public static $shipMap = [
         self::SHIP_STATUS_RECEIVED => '已收货',
         self::SHIP_STATUS_DELIVERED => '已发货',
-        self::SHIP_STATUS_PENDING => '未发货'
+        self::SHIP_STATUS_PENDING => '待发货'
     ];
     public static $refundMap = [
         self::REFUND_STATUS_SUCCESS => '退款成功',
-        self::REFUND_STATUS_APPLIED => '已发起退款请求',
+        self::REFUND_STATUS_APPLIED => '退款中',
         self::REFUND_STATUS_PROCESSING => '退款处理中',
         self::REFUND_STATUS_FAILED => '退款已拒绝',
         self::REFUND_STATUS_PENDING => '未发起退款',
