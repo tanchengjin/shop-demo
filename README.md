@@ -58,6 +58,15 @@ php artisan shop:install
 php artisan queue:work
 ````
 
+### 使用
+
+后台url\
+/admin
+````
+账号admin
+密码admin
+````
+
 ### 配置
 - 支付宝\
 
