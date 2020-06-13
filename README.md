@@ -78,6 +78,8 @@ php artisan queue:work
 ````
 
 ### 配置
+普通安装，将`.env.example`重命名为`.env` \
+docker安装，将`.env.docker`重命名为`.env`
 - 支付宝\
 
 .env配置\
