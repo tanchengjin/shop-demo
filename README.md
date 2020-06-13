@@ -5,10 +5,20 @@
 PHP>=7.2.5\
 Laravel7\
 
+## 下载
+github
+````
+git clone git@github.com:tanchengjin/shop.git
+````
+
+gitee
+````
+git clone git@gitee.com:TanChengjin/shop.git
+````
 
 ## 安装
 
-1、docker安装
+1、docker安装\
 进入docker目录执行如下命令进行安装
 ````
 docker-compose up [-d 可选参数用于后台执行]
