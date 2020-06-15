@@ -11161,7 +11161,7 @@ a.text-dark:focus {
   position: absolute;
   right: 0;
   bottom: 0;
-  background: url("https://finance.huawei.com/cashier/web/img/select_icon.png") no-repeat;
+  background: url("/public/images/select_icon.png") no-repeat;
 }
 
 .orders-payment-page #platform .alipay,
