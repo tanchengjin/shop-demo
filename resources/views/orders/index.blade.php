@@ -25,87 +25,93 @@
                                     </thead>
                                     <tbody>
                                     @foreach($order->item as $index=>$item)
-                                        <tr>
-                                            <td>
-                                                <div class="product-info">
-                                                    <div class="image">
-                                                        <img src="{{$item->product->full_image}}" alt="">
-                                                    </div>
-                                                    <div id="info">
-                                                        <div class="product-title">
-                                                            <div>
-                                                                {{$item->product->title}}
+                                        @if(isset($item->product))
+                                            <tr>
+                                                <td>
+                                                    <div class="product-info">
+                                                        <div class="image">
+                                                            <img src="{{$item->product->full_image}}" alt="">
+                                                        </div>
+                                                        <div id="info">
+                                                            <div class="product-title">
+                                                                <div>
+                                                                    {{$item->product->title}}
+                                                                </div>
+                                                            </div>
+                                                            <div class="sku-title">
+                                                                <div>{{$item->sku->title}}</div>
                                                             </div>
                                                         </div>
-                                                        <div class="sku-title">
-                                                            <div>{{$item->sku->title}}</div>
-                                                        </div>
                                                     </div>
-                                                </div>
-                                            </td>
-                                            <td>￥{{number_format($item->price,2)}}</td>
-                                            <td>{{$item->amount}}</td>
-                                            @if($index === 0)
-                                                <td rowspan="{{count($order->item)}}" class="order_status">
-                                                    @if($order->paid_at)
-                                                        @if($order->refund_status === \App\Order::REFUND_STATUS_PENDING)
-                                                            @if(isset($order->extra['refuse_refund_reason']))
-                                                                退款拒绝
+                                                </td>
+                                                <td>￥{{number_format($item->price,2)}}</td>
+                                                <td>{{$item->amount}}</td>
+                                                @if($index === 0)
+                                                    <td rowspan="{{count($order->item)}}" class="order_status">
+                                                        @if($order->paid_at)
+                                                            @if($order->refund_status === \App\Order::REFUND_STATUS_PENDING)
+                                                                @if(isset($order->extra['refuse_refund_reason']))
+                                                                    退款拒绝
+                                                                @else
+                                                                    已支付
+                                                                @endif
+                                                            @elseif($order->refund_status === \App\Order::REFUND_STATUS_APPLIED)
+                                                                已发起退款请求
+                                                            @elseif($order->refund_status === \App\Order::REFUND_STATUS_SUCCESS)
+                                                                退款成功
                                                             @else
-                                                                已支付
+                                                                {{\App\Order::$refundMap[$order->refund_status]}}
                                                             @endif
-                                                        @elseif($order->refund_status === \App\Order::REFUND_STATUS_APPLIED)
-                                                            已发起退款请求
-                                                        @elseif($order->refund_status === \App\Order::REFUND_STATUS_SUCCESS)
-                                                            退款成功
+                                                        @elseif($order->closed)
+                                                            订单已关闭
                                                         @else
-                                                            {{\App\Order::$refundMap[$order->refund_status]}}
-                                                        @endif
-                                                    @elseif($order->closed)
-                                                        订单已关闭
-                                                    @else
-                                                        <div class="text-center">
-                                                            请于{{$order->created_at->addSecond(config('shop.order.order_ttl'))->format('Y-m-d H:i')}}
-                                                            之前支付
-                                                        </div>
-                                                    @endif
-                                                </td>
-
-                                                <td rowspan="{{count($order->item)}}">
-                                                    <b>￥{{number_format($order->total_amount,2)}}</b>
-                                                </td>
-                                                <td rowspan="{{count($order->item)}}" class="text-center">
-                                                    <a href="{{route('orders.show',$order->id)}}"
-                                                       class="btn btn-primary">查看订单</a>
-                                                    @if(!$order->paid_at && !$order->closed)
-                                                        <div style="margin-top: 10px">
-                                                            <a target="_blank"
-                                                               href="{{route('orders.payment',$order->id)}}"
-                                                               class="btn btn-success">去支付</a>
-                                                        </div>
-                                                    @endif
-
-                                                    @if($order->paid_at)
-                                                        @if($order->ship_status === \App\Order::SHIP_STATUS_DELIVERED)
-                                                            <div style="margin-top: 10px" data-id="{{$order->id}}">
-                                                                <button class="btn btn-success received">确认收货</button>
+                                                            <div class="text-center">
+                                                                请于{{$order->created_at->addSecond(config('shop.order.order_ttl'))->format('Y-m-d H:i')}}
+                                                                之前支付
                                                             </div>
                                                         @endif
-                                                        @if($order->refund_status === \App\Order::REFUND_STATUS_PENDING)
-                                                            <div style="margin-top: 10px" data-id="{{$order->id}}">
-                                                                <button class="btn btn-danger refund">发起退款</button>
-                                                            </div>
-                                                        @endif
+                                                    </td>
 
-                                                        @if($order->ship_status === \App\Order::SHIP_STATUS_RECEIVED)
+                                                    <td rowspan="{{count($order->item)}}">
+                                                        <b>￥{{number_format($order->total_amount,2)}}</b>
+                                                    </td>
+                                                    <td rowspan="{{count($order->item)}}" class="text-center">
+                                                        <a href="{{route('orders.show',$order->id)}}"
+                                                           class="btn btn-primary">查看订单</a>
+                                                        @if(!$order->paid_at && !$order->closed)
                                                             <div style="margin-top: 10px">
-                                                                <a class="btn btn-success" href="{{route('orders.review.index',$order->id)}}">发起评价</a>
+                                                                <a target="_blank"
+                                                                   href="{{route('orders.payment',$order->id)}}"
+                                                                   class="btn btn-success">去支付</a>
                                                             </div>
                                                         @endif
-                                                    @endif
-                                                </td>
-                                            @endif
-                                        </tr>
+
+                                                        @if($order->paid_at)
+                                                            @if($order->ship_status === \App\Order::SHIP_STATUS_DELIVERED)
+                                                                <div style="margin-top: 10px" data-id="{{$order->id}}">
+                                                                    <button class="btn btn-success received">确认收货
+                                                                    </button>
+                                                                </div>
+                                                            @endif
+                                                            @if($order->refund_status === \App\Order::REFUND_STATUS_PENDING)
+                                                                <div style="margin-top: 10px" data-id="{{$order->id}}">
+                                                                    <button class="btn btn-danger refund">发起退款</button>
+                                                                </div>
+                                                            @endif
+
+                                                            @if($order->ship_status === \App\Order::SHIP_STATUS_RECEIVED)
+                                                                <div style="margin-top: 10px">
+                                                                    <a class="btn btn-success"
+                                                                       href="{{route('orders.review.index',$order->id)}}">发起评价</a>
+                                                                </div>
+                                                            @endif
+                                                        @endif
+                                                    </td>
+                                                @endif
+                                            </tr>
+                                        @else
+                                            该商品已被删除
+                                        @endif
                                     @endforeach
 
                                     </tbody>

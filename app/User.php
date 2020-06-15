@@ -56,4 +56,9 @@ class User extends Authenticatable
         return $this->belongsToMany(Product::class,'product_favorites')
             ->orderBy('id','desc');
     }
+
+    public function userCoupon()
+    {
+        return $this->hasMany(UserCoupon::class,'user_id','id');
+    }
 }

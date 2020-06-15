@@ -127,10 +127,11 @@ WECHAT_CERT_KEY=文件完整文件名
 订单支付
 ![avatar](images/product-payment.png)
 
-后台，商品、订单、分类等
+后台，商品、订单、分类、优惠券等
 ![avatar](images/admin-product.png)
 ![avatar](images/admin-product-recycle.png)
 ![avatar](images/admin-order.png)
+![avatar](images/user-coupon.png)
 
 
 

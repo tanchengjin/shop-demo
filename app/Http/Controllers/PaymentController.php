@@ -6,7 +6,7 @@ use App\Events\OrderPaid;
 use App\Order;
 use Carbon\Carbon;
 use Endroid\QrCode\QrCode;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class PaymentController extends Controller
@@ -18,12 +18,16 @@ class PaymentController extends Controller
         if ($order->paid_at || $order->closed) {
             return view('template.order', ['msg' => '该订单已支付或已关闭']);
         }
+        #判断优惠券
+        $total_amount = $this->checkCouponCode($order);
+
 
         $orderInfo = [
             'out_trade_no' => $order->no,
-            'total_amount' => $order->total_amount,
+            'total_amount' => $total_amount,
             'subject' => sprintf("支付订单%s", $order->no)
         ];
+
         return (app('alipay')->web($orderInfo))->send();
     }
 
@@ -54,13 +58,24 @@ class PaymentController extends Controller
                 return 'fail';
             }
 
+
             if (!$order->paid_at) {
-                $this->soldCount($order);
+                $extra = $order->extra ?: [];
+                $extra = [
+                    'paid_amount' => $data->total_amount
+                ];
                 $order->update([
                     'paid_at' => Carbon::now(),
                     'payment_method' => 'alipay',
-                    'payment_no' => $data->trade_no
+                    'payment_no' => $data->trade_no,
+                    'extra' => $extra
                 ]);
+
+
+                $this->soldCount($order);
+
+                $order->userCoupon->delete();
+
             }
         } catch (\Exception $e) {
             Log::error('alipay notify error', [$e->getMessage()]);
@@ -81,6 +96,11 @@ class PaymentController extends Controller
         if ($order->paid_at || $order->closed) {
             return view('template.order', ['msg' => '该订单已支付或已关闭']);
         }
+
+        #判断优惠券
+        #判断优惠券
+        $total_amount = $this->checkCouponCode($order);
+
         $orderInfo = [
             'out_trade_no' => $order->no,
             'total_fee' => $order->total_amount,
@@ -89,9 +109,10 @@ class PaymentController extends Controller
         ];
         $data = app('wechat')->scan($orderInfo);
 
-        $qrcode=new QrCode($data->code_url);
-        return response($qrcode->writeString(),200,[
-            'Content-Type'=>$qrcode->getContentType()
+        $qrcode = new QrCode($data->code_url);
+
+        return response($qrcode->writeString(), 200, [
+            'Content-Type' => $qrcode->getContentType()
         ]);
         // $pay->appId
         // $pay->timeStamp
@@ -106,15 +127,20 @@ class PaymentController extends Controller
         try {
             $data = app('wechat')->verify();
 
-            if (!$order = Order::query()->where('no', $data->out_trade_no)->first()) {
+            if (!$order = Order::where('no', $data->out_trade_no)->first()) {
                 return 'fail';
             }
-
             if (!$order->paid_at) {
+
                 $order->update([
                     'payment_method' => Order::WECHATPAY,
                     'paid_at' => Carbon::now(),
                     'payment_no' => $data->transaction_id
+                ]);
+                $this->soldCount($order);
+                $userCoupon = $order->couponCode->userCoupon()->first();
+                $userCoupon->update([
+                    'used_at' => Carbon::now()
                 ]);
             }
 
@@ -123,6 +149,37 @@ class PaymentController extends Controller
             // $e->getMessage();
         }
         return app('wechat')->success();
+
+    }
+
+    public function checkCouponCode(Order $order)
+    {
+        if ($user_coupon_id = \request()->input('c_id')) {
+            #verify
+            if ($UserCoupon = Auth::user()->userCoupon()->find($user_coupon_id)) {
+                if ($UserCoupon->user_id !== Auth::user()->id) {
+                    throw new \Exception('unknown coupon ');
+                }
+            } else {
+                throw new \Exception('invalid coupon code');
+            }
+
+
+            $UserCoupon->checkAvailable();
+
+
+            $order->update([
+                'user_coupon_code_id' => $UserCoupon->id,
+            ]);
+            $coupon = $UserCoupon->coupon;
+
+            $total_amount = $coupon->discount($order->total_amount, false);
+            $UserCoupon->checkAvailable($total_amount);
+        } else {
+            #not coupon
+            $total_amount = $order->total_amount;
+        }
+        return round($total_amount, 2);
 
     }
 }

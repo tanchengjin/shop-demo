@@ -24,6 +24,10 @@ class AdminMenuSeeder extends Seeder
                 'title' => '分类管理',
                 'icon' => 'fa-bars',
                 'uri' => 'categories'
+            ],[
+                'title' => '优惠券管理',
+                'icon' => 'fa-bars',
+                'uri' => 'coupons'
             ],
         ];
         foreach ($menus as $index => $menu) {

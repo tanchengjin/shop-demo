@@ -20,6 +20,7 @@ class OrderController extends Controller
     public function index()
     {
         $orders = Auth::user()->order()->orderBy('created_at', 'desc')->paginate(16);
+        $orders->load(['item.product', 'item.sku']);
         return view('orders.index', compact('orders'));
     }
 
@@ -36,7 +37,13 @@ class OrderController extends Controller
     public function payment(Order $order)
     {
         $order->load(['item', 'item.product', 'item.sku']);
-        return view('orders.payment', compact('order'));
+        $userCoupons = Auth::user()->userCoupon()
+            ->with(['coupon' => function ($query) {
+                $query->whereDate('start_time', '<=', Carbon::now())
+                    ->whereDate('end_time', '>=', Carbon::now());
+            }])->get();
+
+        return view('orders.payment', compact('order', 'userCoupons'));
     }
 
     public function show(Order $order, Request $request)

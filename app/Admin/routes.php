@@ -21,5 +21,6 @@ Route::group([
     $router->get('api/categories', 'CategoryController@apiCategories');
 
     $router->resource('categories', 'CategoryController');
+    $router->resource('coupons', 'CouponController');
 
 });
