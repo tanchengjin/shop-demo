@@ -15,7 +15,7 @@ class Product extends Model
         'image', 'on_sale', 'rating'
     ];
 
-    protected $appends=[
+    protected $appends = [
         'full_image'
     ];
 
@@ -36,5 +36,10 @@ class Product extends Model
     public function categories()
     {
         return $this->belongsTo(Category::class, 'category_id', 'id');
+    }
+
+    public function properties()
+    {
+        return $this->hasMany(ProductProperty::class, 'product_id', 'id');
     }
 }

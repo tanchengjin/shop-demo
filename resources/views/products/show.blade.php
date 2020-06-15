@@ -79,6 +79,14 @@
                 <div class="tab-content">
                     <div class="tab-pane active" id="description">
                         <div class="container">
+                            <div class="product-properties">
+                                <div class="product-properties-title">产品参数</div>
+                                <ul class="product-properties-list">
+                                    @foreach($product->properties as $property)
+                                    <li>{{$property->name}}：{{$property->value}}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
                             <div class="product-description m-auto">
                                 {!! $product->description !!}
                             </div>

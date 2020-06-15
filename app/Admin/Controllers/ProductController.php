@@ -140,6 +140,11 @@ class ProductController extends AdminController
             $form->number('stock', '库存')->required()->default(1);
             $form->textarea('description', '描述');
         });
+
+        $form->hasMany('properties','属性',function(Form\NestedForm $form){
+            $form->text('name','属性名')->required();
+            $form->text('value','属性值')->required();
+        });
         $form->saving(function (Form $form) {
             $form->model()->min_price = collect($form->input('sku'))->where(Form::REMOVE_FLAG_NAME, 0)->min('price') ?: 0;
             $form->model()->max_price = collect($form->input('sku'))->where(Form::REMOVE_FLAG_NAME, 0)->max('price') ?: 0;

@@ -11050,6 +11050,29 @@ a.text-dark:focus {
   width: 100%;
 }
 
+.products-show-page .product-properties {
+  border-bottom: 1px solid #eee;
+  margin-bottom: 20px;
+}
+
+.products-show-page .product-properties .product-properties-title {
+  font-weight: 700;
+  color: #999;
+  padding: 5px 0;
+}
+
+.products-show-page .product-properties .product-properties-list {
+  list-style: none;
+  padding: 5px 0;
+  text-indent: 0;
+}
+
+.products-show-page .product-properties .product-properties-list li {
+  display: inline-block;
+  width: 30%;
+  overflow: hidden;
+}
+
 .carts-index-page .amount {
   width: 80px;
 }
