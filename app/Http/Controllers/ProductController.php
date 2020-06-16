@@ -71,14 +71,6 @@ class ProductController extends Controller
 
     public function show($id, Request $request)
     {
-        $data = [
-            'title',
-            'long_title',
-            'description',
-            'image',
-            'price',
-        ];
-
         $product = Product::query()
             ->where('on_sale', 1)
             ->with(['sku'])
