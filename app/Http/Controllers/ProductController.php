@@ -21,9 +21,9 @@ class ProductController extends Controller
         #分类
         if ($request->input('category_id', '') && $category = Category::query()->find($request->input('category_id'))) {
             if ($category->is_directory) {
-                $product->whereHas('categories',function($query) use($category){
-                    $like=$category->path.$category->id.'-%';
-                    $query->where('path','like',$like);
+                $product->whereHas('categories', function ($query) use ($category) {
+                    $like = $category->path . $category->id . '-%';
+                    $query->where('path', 'like', $like);
                 });
             } else {
                 $product->where('category_id', $request->input('category_id'));
@@ -71,6 +71,14 @@ class ProductController extends Controller
 
     public function show($id, Request $request)
     {
+        $data = [
+            'title',
+            'long_title',
+            'description',
+            'image',
+            'price',
+        ];
+
         $product = Product::query()
             ->where('on_sale', 1)
             ->with(['sku'])
