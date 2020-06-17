@@ -10,19 +10,27 @@ class Product extends Model
 {
     use SoftDeletes;
 
+    const TYPE_NORMAL = 'normal';
+    const TYPE_CROWDFUNDING = 'crowdfunding';
+
+    public static $typeMap = [
+        self::TYPE_NORMAL => '普通商品',
+        self::TYPE_CROWDFUNDING => '众筹商品'
+    ];
     protected $fillable = [
         'title', 'description', 'min_price',
         'max_price', 'sold_count', 'review_count',
-        'image', 'on_sale', 'rating'
+        'image', 'on_sale', 'rating', 'type'
     ];
 
     protected $appends = [
         'full_image'
     ];
 
-    protected $casts=[
-        'on_sale'=>'boolean'
+    protected $casts = [
+        'on_sale' => 'boolean'
     ];
+
     public function sku()
     {
         return $this->hasMany(ProductSku::class, 'product_id', 'id');
@@ -78,5 +86,9 @@ class Product extends Model
         });
 
         return $arr;
+    }
+
+    public function crowdfundingProduct(){
+        return $this->hasOne(CrowdfundingProduct::class,'product_id','id');
     }
 }

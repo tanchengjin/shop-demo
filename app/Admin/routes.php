@@ -23,4 +23,5 @@ Route::group([
     $router->resource('categories', 'CategoryController');
     $router->resource('coupons', 'CouponController');
 
+    $router->resource('crowdfundingProducts','crowdfundingProductController');
 });

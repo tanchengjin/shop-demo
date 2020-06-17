@@ -29,6 +29,7 @@ class ProductController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new Product());
+        $grid->model()->where('type',Product::TYPE_NORMAL);
         $grid->filter(function ($filter) {
             $filter->scope('trashed', '回收站')->onlyTrashed();
         });
@@ -117,6 +118,7 @@ class ProductController extends AdminController
     {
         $form = new Form(new Product());
 
+        $form->hidden('type',Product::TYPE_NORMAL);
 
         $form->number('category_id', __('分类'));
         $form->text('title', __('标题'))->required();
