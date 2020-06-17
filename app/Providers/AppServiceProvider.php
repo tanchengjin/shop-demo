@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Elasticsearch\ClientBuilder;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -27,6 +28,17 @@ class AppServiceProvider extends ServiceProvider
             $config = config('shop.wechat');
             $config['notify_url'] = 'http://yanda.net.cn/notify.php';
             return Pay::wechat($config);
+        });
+
+        #elastic
+        $this->app->singleton('es',function(){
+            $builder=ClientBuilder::create()->setHosts(config('database.elasticsearch.hosts'));
+
+            if(app()->environment() === 'local'){
+                $builder->setLogger(app('log')->getLogger());
+            }
+
+            return $builder->build();
         });
     }
 

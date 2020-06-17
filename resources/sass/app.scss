@@ -65,6 +65,46 @@
     .form-search {
         margin-bottom: 20px;
     }
+
+    .row {
+        border-bottom: 1px solid #eee;
+        padding: 10px 0;
+
+        &:first-child {
+            border-top: 1px solid #eee;
+        }
+    }
+
+    .filter-box {
+        .filter-key {
+        }
+
+        .filter-value {
+            a {
+                padding: 0 10px;
+            }
+        }
+    }
+
+    .filter {
+        border: 1px red solid;
+        font-size: 12px;
+        padding: 2px 0 2px 2px;
+
+        .filter-value {
+            color: red;
+        }
+
+        .removeProperty {
+            text-decoration: none;
+            color: white;
+            font-weight: bold;
+            background: red;
+            padding: 2px;
+        }
+
+        margin-right: 5px;
+    }
 }
 
 .products-show-page {
@@ -139,19 +179,22 @@
         }
     }
 
-    .product-properties{
+    .product-properties {
         border-bottom: 1px solid #eee;
         margin-bottom: 20px;
-        .product-properties-title{
+
+        .product-properties-title {
             font-weight: 700;
             color: #999;
             padding: 5px 0;
         }
-        .product-properties-list{
+
+        .product-properties-list {
             list-style: none;
             padding: 5px 0;
             text-indent: 0;
-            li{
+
+            li {
                 display: inline-block;
                 width: 30%;
                 overflow: hidden;

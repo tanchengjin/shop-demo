@@ -42,6 +42,7 @@ class ShopCommand extends Command
         try{
             Artisan::call('admin:install');
             Artisan::call('db:seed');
+            Artisan::call('es:syncProducts');
             return $this->info('success');
 
         }catch (\Exception $e){

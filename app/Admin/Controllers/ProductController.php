@@ -3,6 +3,7 @@
 namespace App\Admin\Controllers;
 
 use App\Admin\Actions\Restore;
+use App\Jobs\SyncProductToES;
 use App\Product;
 use Encore\Admin\Admin;
 use Encore\Admin\Controllers\AdminController;
@@ -148,6 +149,11 @@ class ProductController extends AdminController
         $form->saving(function (Form $form) {
             $form->model()->min_price = collect($form->input('sku'))->where(Form::REMOVE_FLAG_NAME, 0)->min('price') ?: 0;
             $form->model()->max_price = collect($form->input('sku'))->where(Form::REMOVE_FLAG_NAME, 0)->max('price') ?: 0;
+        });
+
+        $form->saved(function(Form $form){
+            $product=$form->model();
+            dispatch(new SyncProductToES($product));
         });
 
         return $form;

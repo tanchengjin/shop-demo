@@ -10983,6 +10983,38 @@ a.text-dark:focus {
   margin-bottom: 20px;
 }
 
+.products-index-page .row {
+  border-bottom: 1px solid #eee;
+  padding: 10px 0;
+}
+
+.products-index-page .row:first-child {
+  border-top: 1px solid #eee;
+}
+
+.products-index-page .filter-box .filter-value a {
+  padding: 0 10px;
+}
+
+.products-index-page .filter {
+  border: 1px red solid;
+  font-size: 12px;
+  padding: 2px 0 2px 2px;
+  margin-right: 5px;
+}
+
+.products-index-page .filter .filter-value {
+  color: red;
+}
+
+.products-index-page .filter .removeProperty {
+  text-decoration: none;
+  color: white;
+  font-weight: bold;
+  background: red;
+  padding: 2px;
+}
+
 .products-show-page .skus label {
   padding: 0 10px;
 }

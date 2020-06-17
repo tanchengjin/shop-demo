@@ -2,8 +2,12 @@
 
 [效果浏览](#浏览效果)
 
+# dependence
+
 PHP>=7.2.5\
-Laravel7\
+Elasticsearch 6\
+node.js npm\
+Mysql Innodb
 
 ## 下载
 github
@@ -110,7 +114,8 @@ WECHAT_CERT_KEY=文件完整文件名
 
 首页
 ![avatar](images/product-index.png)
-
+分面导航
+![avatar](images/search.gif)
 详情页
 ![avatar](images/product-detail.png)
 
