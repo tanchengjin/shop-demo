@@ -2,11 +2,12 @@
 
 namespace App\Admin\Controllers;
 
+use App\CrowdfundingProduct;
 use App\Http\Requests\HandleRefundRequest;
 use App\Order;
-use Encore\Admin\Actions\Action;
+use App\Product;
+use App\Services\OrderService;
 use Encore\Admin\Controllers\AdminController;
-use Encore\Admin\Form;
 use Encore\Admin\Grid;
 use Encore\Admin\Layout\Content;
 use Encore\Admin\Show;
@@ -32,6 +33,9 @@ class OrderController extends AdminController
     protected function grid()
     {
         $grid = new Grid(new Order());
+
+        $grid->disableCreateButton();
+
         $grid->model()->orderBy('created_at', 'desc');
         $grid->column('no', __('订单号'))->filter('like');
         $grid->column('user.name', __('用户名'));
@@ -50,8 +54,8 @@ class OrderController extends AdminController
 
         $grid->column('created_at', __('创建时间'))->date('Y-m-d H:i')->filter('range', 'date')->sortable();
 
-        $grid->column('reviewed','评价状态')->display(function($reviewed){
-            return $reviewed?'已评价':'未评价';
+        $grid->column('reviewed', '评价状态')->display(function ($reviewed) {
+            return $reviewed ? '已评价' : '未评价';
         });
         $grid->column('id', '订单状态')->display(function ($id) {
             $order = Order::query()->find($id);
@@ -63,7 +67,7 @@ class OrderController extends AdminController
 
                     if ($order->ship_status === 'pending') {
                         return "<span class='label label-danger'>" . Order::$shipMap[$order->ship_status] . "</span>";
-                    }else{
+                    } else {
                         return "<span class='label label-info'>" . Order::$shipMap[$order->ship_status] . "</span>";
                     }
 
@@ -76,7 +80,7 @@ class OrderController extends AdminController
             return '未知错误';
         });
 
-        $grid->actions(function($action){
+        $grid->actions(function ($action) {
             $action->disableDelete();
             $action->disableEdit();
         });
@@ -136,6 +140,10 @@ class OrderController extends AdminController
         if ($order->ship_status !== Order::SHIP_STATUS_PENDING) {
             throw new \Exception('订单状态不正确');
         }
+
+        if ($order->type === Product::TYPE_CROWDFUNDING && $order->crowdfunding_status !== CrowdfundingProduct::STATUS_SUCCESS) {
+            throw new \Exception('众筹订单必须众筹成功后才可以发货');
+        }
         $data = $this->validate($request, [
             'ship_company' => ['required'],
             'ship_no' => ['required']
@@ -153,7 +161,7 @@ class OrderController extends AdminController
         return redirect()->back();
     }
 
-    public function handleRefund(Order $order, HandleRefundRequest $request)
+    public function handleRefund(Order $order, HandleRefundRequest $request, OrderService $orderService)
     {
         if (!$order->paid_at) {
             throw new \Exception('订单未支付');
@@ -169,7 +177,7 @@ class OrderController extends AdminController
             $order->update([
                 'extra' => $extra
             ]);
-            $this->_handleRefund($order);
+            $orderService->handleRefund($order);
         } else {
             $extra = $order->extra ?: [];
             $extra['refuse_refund_reason'] = $request->input('reason');
@@ -184,6 +192,11 @@ class OrderController extends AdminController
 
     }
 
+    /**
+     * @param Order $order
+     * @throws \Exception
+     * @deprecated
+     */
     private function _handleRefund(Order $order)
     {
         switch ($order->payment_method) {

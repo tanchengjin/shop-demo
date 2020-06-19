@@ -93,7 +93,7 @@
                                                                     </button>
                                                                 </div>
                                                             @endif
-                                                            @if($order->refund_status === \App\Order::REFUND_STATUS_PENDING)
+                                                            @if($order->type === \App\Product::TYPE_NORMAL && $order->refund_status === \App\Order::REFUND_STATUS_PENDING)
                                                                 <div style="margin-top: 10px" data-id="{{$order->id}}">
                                                                     <button class="btn btn-danger refund">发起退款</button>
                                                                 </div>

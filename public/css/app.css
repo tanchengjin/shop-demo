@@ -11015,6 +11015,10 @@ a.text-dark:focus {
   padding: 2px;
 }
 
+.products-show-page .text-red {
+  color: red;
+}
+
 .products-show-page .skus label {
   padding: 0 10px;
 }

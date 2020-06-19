@@ -16,15 +16,23 @@ class CrowdfundingProduct extends Model
         self::STATUS_FAIL => '众筹失败'
     ];
     public $timestamps = false;
+
     protected $fillable = [
-        'target_amount', 'current_amount', 'user_count', 'end_at', 'status', ''
+        'target_amount', 'current_amount', 'user_count', 'end_at', 'status',
     ];
-    protected $dates = ['end_at'];
+    protected $dates=['end_at'];
 
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id', 'id');
     }
 
+
+    public function getPercentAttribute()
+    {
+        $amount = $this->attributes['current_amount'] / $this->attributes['target_amount'];
+
+        return floatval(number_format($amount * 100, 2));
+    }
 
 }

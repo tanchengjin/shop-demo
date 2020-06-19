@@ -55,35 +55,38 @@
             </tr>
             @if($order->paid_at)
                 @if($order->ship_status == \App\Order::SHIP_STATUS_PENDING)
-                    <tr>
-                        <td colspan="4">
-                            <form action="{{route('admin.orders.ship',$order->id)}}" class="form-inline" method="post">
-                                {{csrf_field()}}
-                                <div class="form-group @if($errors->has('ship_company')) has-error @endif">
-                                    <label for="" class="col-form-label">物流公司</label>
-                                    <input type="text" name="ship_company" class="form-control">
-                                    @if($errors->has('ship_company'))
-                                        @foreach($errors->get('ship_company') as $msg)
-                                            <span class="help-block">{{$msg}}</span>
-                                        @endforeach
-                                    @endif
-                                </div>
-                                <div class="form-group @if($errors->has('ship_no')) has-error @endif">
-                                    <label for="" class="col-form-label">物流单号</label>
-                                    <input type="text" name="ship_no" class="form-control">
-                                    @if($errors->has('ship_no'))
-                                        @foreach($errors->get('ship_no') as $msg)
-                                            <span class="help-block">{{$msg}}</span>
-                                        @endforeach
-                                    @endif
-                                </div>
+                    @if($order->type === \App\Product::TYPE_NORMAL || ($order->type === \App\Product::TYPE_CROWDFUNDING && $order->item[0]->product->crowdfunding->status === \App\CrowdfundingProduct::STATUS_SUCCESS))
+                        <tr>
+                            <td colspan="4">
+                                <form action="{{route('admin.orders.ship',$order->id)}}" class="form-inline"
+                                      method="post">
+                                    {{csrf_field()}}
+                                    <div class="form-group @if($errors->has('ship_company')) has-error @endif">
+                                        <label for="" class="col-form-label">物流公司</label>
+                                        <input type="text" name="ship_company" class="form-control">
+                                        @if($errors->has('ship_company'))
+                                            @foreach($errors->get('ship_company') as $msg)
+                                                <span class="help-block">{{$msg}}</span>
+                                            @endforeach
+                                        @endif
+                                    </div>
+                                    <div class="form-group @if($errors->has('ship_no')) has-error @endif">
+                                        <label for="" class="col-form-label">物流单号</label>
+                                        <input type="text" name="ship_no" class="form-control">
+                                        @if($errors->has('ship_no'))
+                                            @foreach($errors->get('ship_no') as $msg)
+                                                <span class="help-block">{{$msg}}</span>
+                                            @endforeach
+                                        @endif
+                                    </div>
 
-                                <div class="form-group">
-                                    <button class="btn btn-primary">发货</button>
-                                </div>
-                            </form>
-                        </td>
-                    </tr>
+                                    <div class="form-group">
+                                        <button class="btn btn-primary">发货</button>
+                                    </div>
+                                </form>
+                            </td>
+                        </tr>
+                    @endif
                 @else
                     <tr>
                         <td>物流公司</td>

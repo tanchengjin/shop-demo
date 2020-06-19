@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Events\OrderPaid;
 use App\Events\OrderReviewed;
+use App\Listeners\UpdateCrowdfundingProductProgress;
 use App\Listeners\UpdateReviewRating;
 use App\Listeners\UpdateSoldCount;
 use Illuminate\Auth\Events\Registered;
@@ -20,12 +21,13 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         OrderPaid::class => [
-            UpdateSoldCount::class
+            UpdateSoldCount::class,
+            UpdateCrowdfundingProductProgress::class
         ],
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
-        OrderReviewed::class=>[
+        OrderReviewed::class => [
             UpdateReviewRating::class
         ],
     ];

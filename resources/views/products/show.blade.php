@@ -15,7 +15,39 @@
                                         {{$product->title}}
                                     </span>
                                 </div>
+                                @if($product->type === \App\Product::TYPE_CROWDFUNDING)
+                                    <div class="crowdfunding-info">
+                                        <div>已筹到</div>
+                                        <div class="total_amount">
+                                            <span>￥</span>{{$product->crowdfunding->current_amount}}</div>
 
+                                        <div class="progress">
+                                            <div class="progress-bar progress-bar-success progress-bar-striped"
+                                                 role="progressbar" aria-valuenow="30" aria-valuemin="0"
+                                                 aria-valuemax="100" style="width: {{$product->crowdfunding->percent}}%">
+
+                                            </div>
+                                        </div>
+                                        <div class="progress-info">
+                                            <span
+                                                class="current-progress">当前进度: {{$product->crowdfunding->percent}}%</span>
+                                            <span class="float-right user_count">{{$product->crowdfunding->user_count}}名支持者</span>
+                                        </div>
+
+                                        @if($product->crowdfunding->status === \App\CrowdfundingProduct::STATUS_FUNDING)
+                                            <div>此商品必须在
+                                                <span
+                                                    class="text-red">{{$product->crowdfunding->end_at->format('Y-m-d')}}</span>
+                                                前众筹到
+                                                <span
+                                                    class="text-red">{{number_format($product->crowdfunding->target_amount)}}</span>为成功
+
+                                                众筹将在 <span
+                                                    class="text-red">{{$product->crowdfunding->end_at->diffForHumans(now())}}</span>结束
+                                            </div>
+                                        @endif
+                                    </div>
+                                @endif
                                 <div class="price">
                                     <label for="">价格</label>
                                     <span>
@@ -53,16 +85,33 @@
                                     </div>
                                 </div>
                                 <div class="buttons form-inline">
-                                    <div>
-                                        <button class="btn btn-primary" id="add_to_cart">加入购物车</button>
-                                    </div>
-                                    <div>
-                                        @if(!$favorite)
-                                            <button class="btn btn-success favorite">收藏</button>
+
+                                    @if($product->type === \App\Product::TYPE_CROWDFUNDING)
+                                        @if(\Illuminate\Support\Facades\Auth::check())
+                                            @if($product->crowdfunding->status === \App\CrowdfundingProduct::STATUS_FUNDING)
+                                                <button class="btn btn-primary btn-crowdfunding"
+                                                        style="margin-right: 10px">众筹
+                                                </button>
+                                            @else
+                                                <button
+                                                    class="btn btn-primary disabled" style="margin-right: 5px">{{\App\CrowdfundingProduct::$statusMap[$product->crowdfunding->status]}}</button>
+                                            @endif
                                         @else
-                                            <button class="btn btn-danger disfavor">取消收藏</button>
+                                            <a class="btn btn-primary" href="{{route('login')}}">登录</a>
                                         @endif
-                                    </div>
+                                    @else
+                                        <div>
+                                            <button class="btn btn-primary" id="add_to_cart">加入购物车</button>
+                                        </div>
+                                        <div>
+                                            @endif
+
+                                            @if(!$favorite)
+                                                <button class="btn btn-success favorite">收藏</button>
+                                            @else
+                                                <button class="btn btn-danger disfavor">取消收藏</button>
+                                            @endif
+                                        </div>
                                 </div>
                             </div>
                         </div>
@@ -83,7 +132,7 @@
                                 <div class="product-properties-title">产品参数</div>
                                 <ul class="product-properties-list">
                                     @foreach($product->properties as $property)
-                                    <li>{{$property->name}}：{{$property->value}}</li>
+                                        <li>{{$property->name}}：{{$property->value}}</li>
                                     @endforeach
                                 </ul>
                             </div>
@@ -130,6 +179,73 @@
 @section('javascript')
     <script type="text/javascript">
         $(document).ready(function () {
+
+            $('.btn-crowdfunding').click(function () {
+                var sku = $('input[name=sku]:checked').val()
+
+                if (!sku) {
+                    swal.fire('请选择商品规格!');
+                    return;
+                }
+
+                var addresses =
+                    {!! json_encode(\Illuminate\Support\Facades\Auth::check()?\Illuminate\Support\Facades\Auth::user()->addresses:[]) !!}
+
+
+                var $form = $("<form method='post' class='form-horizontal'></form>")
+
+                $form.append("<div class='form-group form-inline'>" +
+                    "<label class='control-label col-sm-3'>收货地址</label>" +
+                    "<div class='col-sm-9'>" +
+                    "<select class='form-control' name='address_id'></select>" +
+                    "</div>" +
+                    "</div>"
+                )
+                ;
+
+                addresses.forEach(function (address) {
+                    $form.find("select[name=address_id]").append(
+                        "<option value=" + address.id + ">" + address.full_address + '' + address.contact_name + address.contact_phone + "</option>");
+                });
+
+                swal.fire({
+                    title: '请选择收货地址',
+                    html: $form[0],
+                    preConfirm(inputValue) {
+                        if (!inputValue) {
+                            return;
+                        }
+                        var res = {
+                            'sku_id': sku,
+                            'amount': $('input[name=amount]').val(),
+                            'address_id': $form.find("select[name=address_id]").val()
+                        };
+
+                        if (res) {
+                            axios.post('{{route('order.crowdfunding')}}', res).then(function (res) {
+                                swal.fire('众筹成功','','success').then(function(){
+                                    location.href='{{route('orders.index')}}';
+                                });
+                            }, function (res) {
+                                if (res.response.status === 422) {
+                                    console.log(res.response)
+                                    var html = '<div>';
+                                    _.each(res.response.data.errors,function (errors) {
+                                        _.each(errors,function(error){
+                                            html+=error+"</br>";
+                                        });
+                                    });
+                                    html+= '<div>';
+                                    swal.fire(html,'','error');
+                                }else{
+                                    swal.fire('error','服务器内部错误','error');
+                                }
+                            });
+                        }
+                    }
+                })
+            });
+
             $('.sku').click(function () {
                 $('.price span').text('￥' + $(this).data('price'))
                 $('#stock').text('库存 ' + $(this).data('stock'))

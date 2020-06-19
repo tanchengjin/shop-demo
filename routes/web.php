@@ -33,6 +33,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::delete('shoppingCart/{id}', 'ShoppingCartController@destroy')->name('carts.destroy');
 
     Route::post('order', 'OrderController@store')->name('order.store');
+    Route::post('crowdfundingOrder','OrderController@crowdfundingStore')->name('order.crowdfunding');
+
     //==============用户中心开始==================
     #==订单==
     Route::get('orders', 'OrderController@index')->name('orders.index');

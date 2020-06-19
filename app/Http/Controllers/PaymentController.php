@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events\OrderPaid;
 use App\Order;
+use App\Product;
 use Carbon\Carbon;
 use Endroid\QrCode\QrCode;
 use Illuminate\Support\Facades\Auth;
@@ -18,8 +19,14 @@ class PaymentController extends Controller
         if ($order->paid_at || $order->closed) {
             return view('template.order', ['msg' => '该订单已支付或已关闭']);
         }
-        #判断优惠券
-        $total_amount = $this->checkCouponCode($order);
+        //普通订单可以使用优惠券
+        if ($order->type === Product::TYPE_NORMAL) {
+            #判断优惠券
+            $total_amount = $this->checkCouponCode($order);
+        } else {
+            $total_amount = $order->total_amount;
+
+        }
 
 
         $orderInfo = [
@@ -74,7 +81,9 @@ class PaymentController extends Controller
 
                 $this->soldCount($order);
 
-                $order->userCoupon->delete();
+                if (!is_null($order->coupon_code_id) || $order->userCoupon()->first()){
+                    $order->userCoupon->delete();
+                }
 
             }
         } catch (\Exception $e) {

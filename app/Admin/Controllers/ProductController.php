@@ -3,16 +3,11 @@
 namespace App\Admin\Controllers;
 
 use App\Admin\Actions\Restore;
-use App\Jobs\SyncProductToES;
 use App\Product;
-use Encore\Admin\Admin;
-use Encore\Admin\Controllers\AdminController;
 use Encore\Admin\Form;
 use Encore\Admin\Grid;
-use Encore\Admin\Layout\Content;
-use Encore\Admin\Show;
 
-class ProductController extends AdminController
+class ProductController extends CommonProductController
 {
     /**
      * Title for current resource.
@@ -26,10 +21,8 @@ class ProductController extends AdminController
      *
      * @return Grid
      */
-    protected function grid()
+    protected function customGrid(Grid $grid)
     {
-        $grid = new Grid(new Product());
-        $grid->model()->where('type',Product::TYPE_NORMAL);
         $grid->filter(function ($filter) {
             $filter->scope('trashed', '回收站')->onlyTrashed();
         });
@@ -77,88 +70,15 @@ class ProductController extends AdminController
         return $grid;
     }
 
-    /**
-     * Make a show builder.
-     *
-     * @param mixed $id
-     * @return Show
-     */
-    protected function detail($id)
+
+
+    function getProductType()
     {
-        $show = new Show(Product::findOrFail($id));
-
-        $show->field('id', __('Id'));
-        $show->field('category_id', __('Category id'));
-        $show->field('title', __('Title'));
-        $show->field('description', __('Description'));
-        $show->field('image', __('Image'));
-        $show->field('min_price', __('Min price'));
-        $show->field('max_price', __('Max price'));
-        $show->field('sold_count', __('Sold count'));
-        $show->field('review_count', __('Review count'));
-        $show->field('on_sale', __('On sale'));
-        $show->field('created_at', __('Created at'));
-        $show->field('updated_at', __('Updated at'));
-
-        return $show;
+        return Product::TYPE_NORMAL;
     }
 
-    public function edit($id, Content $content)
+    protected function customForm(Form $form)
     {
-        return $content->header('编辑')->body($this->form(true)->edit($id));
+
     }
-
-    /**
-     * Make a form builder.
-     *
-     * @param bool $edit
-     * @return Form
-     */
-    protected function form($isEdit = false)
-    {
-        $form = new Form(new Product());
-
-        $form->hidden('type',Product::TYPE_NORMAL);
-
-        $form->number('category_id', __('分类'));
-        $form->text('title', __('标题'))->required();
-        if ($isEdit) {
-            $form->cropper('image', __('图片'))->cRatio(350, 350);
-
-        } else {
-            $form->cropper('image', __('图片'))->cRatio(350, 350)->required();
-        }
-
-
-        $form->UEditor('description', __('描述'))->required();
-        $form->display('sold_count', __('销量'));
-        $form->display('review_count', __('评价数量'));
-        $form->switch('on_sale', __('状态'))->states([
-            'on' => ['value' => 1, 'text' => '上架', 'color=success'],
-            'off' => ['value' => 0, 'text' => '下架', 'color=danger']
-        ])->default(1);
-        $form->hasMany('sku', function (Form\NestedForm $form) {
-            $form->text('title', '标题')->required();
-            $form->decimal('price', '价格')->required();
-            $form->number('stock', '库存')->required()->default(1);
-            $form->textarea('description', '描述');
-        });
-
-        $form->hasMany('properties','属性',function(Form\NestedForm $form){
-            $form->text('name','属性名')->required();
-            $form->text('value','属性值')->required();
-        });
-        $form->saving(function (Form $form) {
-            $form->model()->min_price = collect($form->input('sku'))->where(Form::REMOVE_FLAG_NAME, 0)->min('price') ?: 0;
-            $form->model()->max_price = collect($form->input('sku'))->where(Form::REMOVE_FLAG_NAME, 0)->max('price') ?: 0;
-        });
-
-        $form->saved(function(Form $form){
-            $product=$form->model();
-            dispatch(new SyncProductToES($product));
-        });
-
-        return $form;
-    }
-
 }

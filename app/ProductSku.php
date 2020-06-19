@@ -22,7 +22,7 @@ class ProductSku extends Model
         if($amount <= 0){
             throw new \Exception('减库存不能小于0');
         }
-        return self::query()->where('id',$this->id)->where('stock','>',$amount)->decrement('stock',$amount);
+        return self::query()->where('id',$this->id)->where('stock','>=',$amount)->decrement('stock',$amount);
 
     }
 }

@@ -10,7 +10,7 @@ class Order extends Model
     protected $fillable = [
         'total_amount', 'remark', 'address', 'closed', 'paid_at',
         'payment_method', 'payment_no', 'ship_status', 'extra',
-        'refund_status', 'refund_no', 'reviewed', 'user_coupon_code_id'
+        'refund_status', 'refund_no', 'reviewed', 'user_coupon_code_id','type'
     ];
     protected $casts = [
         'address' => 'json',
@@ -91,5 +91,10 @@ class Order extends Model
     public function userCoupon()
     {
         return $this->belongsTo(UserCoupon::class, 'user_coupon_code_id', 'id');
+    }
+
+    public function getCrowdfundingStatusAttribute()
+    {
+        return $this->item[0]->product->crowdfunding->status;
     }
 }

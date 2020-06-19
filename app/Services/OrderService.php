@@ -9,8 +9,10 @@ use App\Exceptions\CouponCodeException;
 use App\Jobs\ClosedOrder;
 use App\Order;
 use App\OrderItem;
+use App\Product;
 use App\ProductSku;
 use App\ShoppingCart;
+use App\User;
 use App\UserAddress;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -40,6 +42,7 @@ class OrderService
                     'contact_name' => $address->contact_name,
                     'contact_phone' => $address->contact_phone
                 ],
+                'type' => Product::TYPE_NORMAL
             ]);
             if (!is_null($remark)) {
                 $order->remark = $remark;
@@ -88,4 +91,85 @@ class OrderService
         dispatch(new ClosedOrder($order, config('shop.order.order_ttl')));
         return $order;
     }
+
+
+    #众筹商品下单
+    public function crowdfundingStore(User $user, ProductSku $sku, UserAddress $address, $amount)
+    {
+        $order = DB::transaction(function () use ($user, $sku, $amount, $address) {
+            $order = new Order([
+                'extra' => ['order_type' => 'crowdfunding'],
+                'total_amount' => $sku->price * $amount,
+                'address' => [
+                    'address' => $address->full_name,
+                    'zip' => $address->zip,
+                    'contact_name' => $address->contact_name,
+                    'contact_phone' => $address->contact_phone
+                ],
+                'type' => Product::TYPE_CROWDFUNDING
+            ]);
+
+            $order->user()->associate($user);
+            $order->save();
+
+            $orderItem = $order->item()->make([
+                'amount' => $amount,
+                'price' => $sku->price
+            ]);
+
+            $orderItem->sku()->associate($sku);
+            $orderItem->product()->associate($sku->product);
+
+            $orderItem->save();
+
+            if ($sku->decrementStock($amount) <= 0) {
+                throw new \Exception('库存不足');
+            }
+            return $order;
+        });
+        $crowdfundingTTL = $sku->product->crowdfunding->end_at->getTimestamp() - time();
+
+        dispatch(new ClosedOrder($order, min($crowdfundingTTL, config('shop.order.order_ttl'))));
+
+        return $order;
+    }
+
+
+    #退款功能
+    public function handleRefund(Order $order)
+    {
+        switch ($order->payment_method) {
+            case 'alipay':
+                $no = Order::createRefundNo();
+                $res = app('alipay')->refund([
+                    'out_trade_no' => $order->no,
+                    'refund_amount' => $order->total_amount,
+                    'out_request_no' => $no
+                ]);
+
+                if ($res->sub_code) {
+                    $extra = $order->extra ?: [];
+                    $extra['alipay_refund_fail_code'] = $res->sub_code;
+                    $order->update([
+                        'refund_no' => $no,
+                        'extra' => $extra,
+                        'refund_status' => Order::REFUND_STATUS_FAILED,
+                    ]);
+                } else {
+                    $order->update([
+                        'refund_status' => Order::REFUND_STATUS_SUCCESS,
+                        'refund_no' => $no
+                    ]);
+                }
+                break;
+            case 'wechat':
+                //todo
+                break;
+            default:
+                Log::error('未知支付平台');
+                throw new \Exception('退款异常');
+                break;
+        }
+    }
+
 }

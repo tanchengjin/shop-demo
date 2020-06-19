@@ -3,11 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Events\OrderReviewed;
+use App\Http\Requests\crowdfundingOrderRequest;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\ReviewRequest;
 use App\Order;
 use App\OrderItem;
+use App\Product;
+use App\ProductSku;
 use App\Services\OrderService;
+use App\UserAddress;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,15 +37,28 @@ class OrderController extends Controller
         return $orderService->store($items, $address_id, $remark);
     }
 
+    #众筹订单入库
+    public function crowdfundingStore(crowdfundingOrderRequest $request, OrderService $orderService)
+    {
+        $sku = ProductSku::find($request->input('sku_id'));
+        $address = UserAddress::find($request->input('address_id'));
+        $orderService->crowdfundingStore($request->user(), $sku, $address, $request->input('amount'));
+    }
+
     #订单确认
     public function payment(Order $order)
     {
         $order->load(['item', 'item.product', 'item.sku']);
-        $userCoupons = Auth::user()->userCoupon()
-            ->with(['coupon' => function ($query) {
-                $query->whereDate('start_time', '<=', Carbon::now())
-                    ->whereDate('end_time', '>=', Carbon::now());
-            }])->get();
+        //普通商品可以使用优惠券
+        $userCoupons=[];
+        if ($order->type === Product::TYPE_NORMAL) {
+            $userCoupons = Auth::user()->userCoupon()
+                ->with(['coupon' => function ($query) {
+                    $query->whereDate('start_time', '<=', Carbon::now())
+                        ->whereDate('end_time', '>=', Carbon::now());
+                }])->get();
+        }
+
 
         return view('orders.payment', compact('order', 'userCoupons'));
     }
@@ -75,6 +92,9 @@ class OrderController extends Controller
             return;
         }
 
+        if ($order->type === Product::TYPE_CROWDFUNDING) {
+            throw new \Exception('众筹订单不支持退款');
+        }
         $data = $this->validate($request, [
             'reason' => ['required', 'min:1'],
         ], [], [
