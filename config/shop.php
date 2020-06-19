@@ -1,8 +1,10 @@
 <?php
 return [
     'order' => [
-        #order下单后有效期,单位秒,默认半小时
-        'order_ttl' => env('ORDER_TTL', 1800)
+        #order下单后有效期,单位秒,默认30分钟
+        'order_ttl' => env('ORDER_TTL', 1800),
+        //秒杀订单有效期,默认5分钟
+        'seckill_ttl' => env('SECKILL_TTL', 300)
     ],
     #支付宝支付配置
     'alipay' => [
@@ -23,13 +25,13 @@ return [
     ],
 
     'wechat' => [
-        'appid' => env('WECHAT_APP_ID',''), // APP APPID
-        'app_id' => env('WECHAT_APP_ID',''), // 公众号 APPID
+        'appid' => env('WECHAT_APP_ID', ''), // APP APPID
+        'app_id' => env('WECHAT_APP_ID', ''), // 公众号 APPID
         'miniapp_id' => '', // 小程序 APPID
         'mch_id' => env('WECHAT_MCH_ID'),
         'key' => '',
-        'cert_client' => resource_path('wechat/').env('WECHAT_CERT',''), // optional，退款等情况时用到
-        'cert_key' => resource_path('wechat/').env('WECHAT_KEY',''),// optional，退款等情况时用到
+        'cert_client' => resource_path('wechat/') . env('WECHAT_CERT', ''), // optional，退款等情况时用到
+        'cert_key' => resource_path('wechat/') . env('WECHAT_KEY', ''),// optional，退款等情况时用到
         'log' => [ // optional
             'file' => storage_path('logs/wechat/wechat.log'),
             'level' => 'debug', // 建议生产环境等级调整为 info，开发环境为 debug

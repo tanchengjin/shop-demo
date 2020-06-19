@@ -26,6 +26,10 @@ class AdminMenuSeeder extends Seeder
                         'title' => '众筹商品',
                         'icon' => 'fa-bars',
                         'uri' => 'crowdfundingProducts'
+                    ],[
+                        'title'=>'秒杀商品',
+                        'icon'=>'fa-bars',
+                        'uri'=>'seckills'
                     ]
                 ],
             ], [

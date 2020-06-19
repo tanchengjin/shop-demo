@@ -94,6 +94,16 @@ class OrderService
 
 
     #众筹商品下单
+
+    /**
+     * @param User $user
+     * @param ProductSku $sku
+     * @param UserAddress $address
+     * @param $amount
+     * @return mixed
+     * @deprecated 此功能废弃，请用 crowdfunding方法
+     * @see crowdfunding()
+     */
     public function crowdfundingStore(User $user, ProductSku $sku, UserAddress $address, $amount)
     {
         $order = DB::transaction(function () use ($user, $sku, $amount, $address) {
@@ -134,6 +144,106 @@ class OrderService
         return $order;
     }
 
+    /**
+     * 众筹订单
+     * @param User $user
+     * @param ProductSku $sku
+     * @param UserAddress $address
+     * @param $amount
+     * @return mixed
+     * @throws \Exception
+     */
+    public function crowdfunding(User $user, ProductSku $sku, UserAddress $address,$amount)
+    {
+        //结束时间与当前相差的秒
+        $crowdfundingTTL = $sku->product->crowdfunding->end_at->getTimestamp() - time();
+        //订单关闭时间不能大于设置中的订单关闭时间
+        $ttl = min($crowdfundingTTL, config('shop.order.order_ttl'));
+
+        return $this->createOrder($user, $sku, $address, $amount,Product::TYPE_CROWDFUNDING, $ttl);
+
+    }
+
+    /**
+     * 秒杀订单
+     * @param User $user
+     * @param ProductSku $sku
+     * @param UserAddress $address
+     * @return mixed
+     * @throws \Exception
+     */
+    public function seckill(User $user, ProductSku $sku, UserAddress $address)
+    {
+        //秒杀订单有效期半小时
+        $ttl = config('shop.order.seckill_ttl');
+
+        //秒杀商品只允许购买一个
+        return $this->createOrder($user, $sku, $address, 1, Product::TYPE_SECKILL, $ttl);
+
+
+    }
+
+    /**
+     * 创建订单核心功能
+     * @param User $user 用户
+     * @param ProductSku $sku 商品
+     * @param UserAddress $address 收货地址
+     * @param $amount int 购买数量
+     * @param $type string 订单的类型，区分普通订单还是秒杀、众筹等订单
+     * @param $ttl int 订单延迟关闭时间/单位秒
+     * @return mixed
+     * @throws \Exception
+     */
+    private function createOrder(User $user, ProductSku $sku, UserAddress $address, $amount, $type, $ttl)
+    {
+        if (!in_array($type, array_keys(Product::$typeMap))) {
+            Log::error('create order error type error' . $type);
+            throw new \Exception('支付错误');
+        }
+
+        $order = DB::transaction(function () use ($user, $sku, $amount, $address, $type) {
+            $order = new Order([
+                'extra' => ['order_type' => 'crowdfunding'],
+                'total_amount' => $sku->price * $amount,
+                'address' => [
+                    'address' => $address->full_name,
+                    'zip' => $address->zip,
+                    'contact_name' => $address->contact_name,
+                    'contact_phone' => $address->contact_phone
+                ],
+                'type' => $type
+            ]);
+
+            $order->user()->associate($user);
+            $order->save();
+
+            $orderItem = $order->item()->make([
+                'amount' => $amount,
+                'price' => $sku->price
+            ]);
+
+            $orderItem->sku()->associate($sku);
+            $orderItem->product()->associate($sku->product);
+
+            $orderItem->save();
+
+            if ($sku->decrementStock($amount) <= 0) {
+                throw new \Exception('库存不足');
+            }
+            return $order;
+        });
+
+        //订单延迟关闭
+        dispatch(new ClosedOrder($order, $ttl));
+
+        return $order;
+    }
+
+    //关闭订单
+    private function closeOrder($ttl)
+    {
+
+    }
 
     #退款功能
     public function handleRefund(Order $order)

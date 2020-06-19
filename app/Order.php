@@ -7,10 +7,20 @@ use Ramsey\Uuid\Uuid;
 
 class Order extends Model
 {
+
+    const TYPE_NORMAL = 'normal';
+    const TYPE_CROWDFUNDING = 'crowdfunding';
+    const TYPE_SECKILL = 'seckill';
+
+    public static $statusMap=[
+        self::TYPE_NORMAL=>'普通订单',
+        self::TYPE_CROWDFUNDING=>'众筹订单',
+        self::TYPE_SECKILL=>'秒杀订单',
+    ];
     protected $fillable = [
         'total_amount', 'remark', 'address', 'closed', 'paid_at',
         'payment_method', 'payment_no', 'ship_status', 'extra',
-        'refund_status', 'refund_no', 'reviewed', 'user_coupon_code_id','type'
+        'refund_status', 'refund_no', 'reviewed', 'user_coupon_code_id', 'type'
     ];
     protected $casts = [
         'address' => 'json',

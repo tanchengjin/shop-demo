@@ -24,4 +24,8 @@ Route::group([
     $router->resource('coupons', 'CouponController');
 
     $router->resource('crowdfundingProducts','crowdfundingProductController');
+
+
+    #秒杀商品
+    $router->resource('seckills','SeckillController');
 });

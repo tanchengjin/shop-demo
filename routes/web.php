@@ -33,8 +33,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::delete('shoppingCart/{id}', 'ShoppingCartController@destroy')->name('carts.destroy');
 
     Route::post('order', 'OrderController@store')->name('order.store');
-    Route::post('crowdfundingOrder','OrderController@crowdfundingStore')->name('order.crowdfunding');
-
+    Route::post('crowdfundingOrder', 'OrderController@crowdfundingStore')->name('order.crowdfunding');
+    Route::post('seckillOrder', 'OrderController@seckill')->name('order.seckill');
     //==============用户中心开始==================
     #==订单==
     Route::get('orders', 'OrderController@index')->name('orders.index');
@@ -44,7 +44,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('orders/{order}/refund', 'OrderController@refund')->name('orders.refund');
     Route::get('orders/{order}/review', 'OrderController@reviewIndex')->name('orders.review.index');
     Route::post('orders/{order}/review', 'OrderController@review')->name('orders.review.store');
-
 
     #收藏列表
     Route::get('center/favorites', 'ProductController@favorList')->name('products.favorite.index');

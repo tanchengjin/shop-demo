@@ -11078,6 +11078,10 @@ a.text-dark:focus {
   margin-right: 30px;
 }
 
+.products-show-page .product-detail .buttons button {
+  margin-right: 5px;
+}
+
 .products-show-page .product-description {
   width: 790px;
 }

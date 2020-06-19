@@ -24,7 +24,8 @@
                                         <div class="progress">
                                             <div class="progress-bar progress-bar-success progress-bar-striped"
                                                  role="progressbar" aria-valuenow="30" aria-valuemin="0"
-                                                 aria-valuemax="100" style="width: {{$product->crowdfunding->percent}}%">
+                                                 aria-valuemax="100"
+                                                 style="width: {{$product->crowdfunding->percent}}%">
 
                                             </div>
                                         </div>
@@ -94,10 +95,24 @@
                                                 </button>
                                             @else
                                                 <button
-                                                    class="btn btn-primary disabled" style="margin-right: 5px">{{\App\CrowdfundingProduct::$statusMap[$product->crowdfunding->status]}}</button>
+                                                    class="btn btn-primary disabled"
+                                                    style="margin-right: 5px">{{\App\CrowdfundingProduct::$statusMap[$product->crowdfunding->status]}}</button>
                                             @endif
                                         @else
                                             <a class="btn btn-primary" href="{{route('login')}}">登录</a>
+                                        @endif
+                                    @elseif($product->type === \App\Product::TYPE_SECKILL)
+                                        @if(\Illuminate\Support\Facades\Auth::check())
+                                            @if($product->seckill->is_before_start)
+                                                <button class="btn btn-primary disabled btn-seckill">抢购倒计时</button>
+                                            @elseif($product->seckill->is_after_end)
+                                                <button class="btn btn-primary disabled btn-seckill">抢购已结束</button>
+                                            @else
+                                                <button class="btn btn-primary btn-seckill">立即抢购</button>
+                                            @endif
+                                        @else
+                                            <a class="btn btn-primary" href="{{route('login')}}"
+                                               style="margin-right: 5px">请先登录</a>
                                         @endif
                                     @else
                                         <div>
@@ -177,8 +192,87 @@
     </div>
 @endsection
 @section('javascript')
+
+    @if($product->type === \App\Product::TYPE_SECKILL && $product->seckill->is_before_start)
+        <script src="https://cdn.bootcss.com/moment.js/2.22.1/moment.min.js"></script>
+    @endif
     <script type="text/javascript">
         $(document).ready(function () {
+            $('.btn-seckill').click(function () {
+                var sku = $('input[name=sku]:checked').val();
+                if (!sku) {
+                    swal.fire('请选择商品', '', 'error');
+                    return;
+                }
+
+                var addresses ={!! json_encode(\Illuminate\Support\Facades\Auth::check()?auth()->user()->addresses->toArray():[]) !!};
+
+                var addressesBox = $('<select name="address_id"></select>');
+
+                addresses.forEach(function (address) {
+                    addressesBox.append("<option value=" + address.id + ">" + address.full_address + '' + address.contact_name + '' + address.contact_phone
+                        + "</option>"
+                    )
+                });
+                console.log(addressesBox[0])
+                swal.fire({
+                    title: '请选择收货地址',
+                    icon:'info',
+                    html: addressesBox[0]
+                }).then(function (result) {
+                    if (!result) {
+                        return;
+                    } else {
+                        address=addressesBox.val();
+
+                        if(!address){
+                            return;
+                        }
+                        var res = {
+                            'sku_id': sku,
+                            'address_id': address
+                        };
+
+                        console.log(res)
+                        axios.post('{{route('order.seckill')}}', res).then(function (res) {
+                            swal.fire('操作成功', '', 'success');
+                            location.href='{{route('orders.index')}}';
+                        }, function (res) {
+                            console.log(res);
+                            if (res.response.status === 422) {
+                                var e_html = '<div>';
+                                _.each(res.response.data.errors, function (errors) {
+                                    _.each(errors, function (error) {
+                                        e_html += error + '</br>';
+                                    });
+                                });
+                                e_html += '</div>';
+                                swal.fire(e_html, '', 'error')
+                            }
+                        });
+                    }
+                })
+            });
+
+                @if($product->type === \App\Product::TYPE_SECKILL && $product->seckill->is_before_start)
+            var startTime = moment.unix({{$product->seckill->start_at->getTimestamp()}});
+
+            var hd1 = setInterval(function () {
+                var now = moment();
+
+                if (now.isAfter(startTime)) {
+                    $('.btn-seckill').remove('disabled').removeClass('countdown').text('立即抢购');
+                    clearInterval(hd1);
+                    return;
+                }
+
+                var hour = startTime.diff(now, 'hours');
+                var minute = startTime.diff(now, 'minutes') % 60;
+                var seconds = startTime.diff(now, 'seconds') % 60;
+                $('.btn-seckill').text('抢购倒计时' + hour + ':' + minute + ':' + seconds);
+            }, 500);
+            @endif
+
 
             $('.btn-crowdfunding').click(function () {
                 var sku = $('input[name=sku]:checked').val()
@@ -223,22 +317,22 @@
 
                         if (res) {
                             axios.post('{{route('order.crowdfunding')}}', res).then(function (res) {
-                                swal.fire('众筹成功','','success').then(function(){
-                                    location.href='{{route('orders.index')}}';
+                                swal.fire('众筹成功', '', 'success').then(function () {
+                                    location.href = '{{route('orders.index')}}';
                                 });
                             }, function (res) {
                                 if (res.response.status === 422) {
                                     console.log(res.response)
                                     var html = '<div>';
-                                    _.each(res.response.data.errors,function (errors) {
-                                        _.each(errors,function(error){
-                                            html+=error+"</br>";
+                                    _.each(res.response.data.errors, function (errors) {
+                                        _.each(errors, function (error) {
+                                            html += error + "</br>";
                                         });
                                     });
-                                    html+= '<div>';
-                                    swal.fire(html,'','error');
-                                }else{
-                                    swal.fire('error','服务器内部错误','error');
+                                    html += '<div>';
+                                    swal.fire(html, '', 'error');
+                                } else {
+                                    swal.fire('error', '服务器内部错误', 'error');
                                 }
                             });
                         }

@@ -6,6 +6,7 @@ use App\Events\OrderReviewed;
 use App\Http\Requests\crowdfundingOrderRequest;
 use App\Http\Requests\OrderRequest;
 use App\Http\Requests\ReviewRequest;
+use App\Http\Requests\SeckillOrderRequest;
 use App\Order;
 use App\OrderItem;
 use App\Product;
@@ -45,12 +46,26 @@ class OrderController extends Controller
         $orderService->crowdfundingStore($request->user(), $sku, $address, $request->input('amount'));
     }
 
-    #订单确认
+    /**
+     * 秒杀订单
+     * @param SeckillOrderRequest $request
+     * @param OrderService $orderService
+     * @throws \Exception
+     */
+    public function seckill(SeckillOrderRequest $request, OrderService $orderService)
+    {
+        $sku = ProductSku::find($request->input('sku_id'));
+        $address = UserAddress::find($request->input('address_id'));
+        $user = $request->user();
+        $orderService->seckill($user, $sku, $address);
+    }
+
+    #订单确认界面
     public function payment(Order $order)
     {
         $order->load(['item', 'item.product', 'item.sku']);
         //普通商品可以使用优惠券
-        $userCoupons=[];
+        $userCoupons = [];
         if ($order->type === Product::TYPE_NORMAL) {
             $userCoupons = Auth::user()->userCoupon()
                 ->with(['coupon' => function ($query) {

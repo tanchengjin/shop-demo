@@ -41,7 +41,9 @@ abstract class CommonProductController extends AdminController
         $grid = new Grid(new Product());
         $grid->model()->where('type', $this->getProductType());
 
-        return $this->customGrid($grid);
+        $this->customGrid($grid);
+
+        return $grid;
     }
 
     protected function form($isEdit = false)
@@ -76,7 +78,7 @@ abstract class CommonProductController extends AdminController
 
         $this->customForm($form);
 
-        $form->hasMany('sku', function (Form\NestedForm $form) {
+        $form->hasMany('sku', 'sku',function (Form\NestedForm $form) {
             $form->text('title', '标题')->required();
             $form->decimal('price', '价格')->required();
             $form->number('stock', '库存')->required()->default(1);
