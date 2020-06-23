@@ -11247,9 +11247,15 @@ a.text-dark:focus {
   padding: 5px;
 }
 
+.category .dropdown-submenu {
+  position: relative;
+}
+
 .category .dropdown-submenu > .dropdown-menu {
   top: 0;
   left: 100%;
+  margin-top: -6px;
+  margin-left: 1px;
 }
 
 .category .dropdown-submenu:hover > .dropdown-menu {

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Category;
 use Elasticsearch\ClientBuilder;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Schema;
@@ -50,5 +51,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(199);
+
+        view()->share('categoryTree',Category::categoryTree());
     }
 }
