@@ -15,3 +15,4 @@ resources/wechat
 docker/redis/data/*
 docker/nginx/log/
 docker/mysql/data
+public/uploads/base64img_cache

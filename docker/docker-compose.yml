@@ -26,7 +26,7 @@ services:
       #日志文件
       - ./nginx/log:/var/log/nginx
       #文件共享
-      - ../storage/app/public:/usr/share/nginx/html/project/public/storage
+      - ../storage/app/public:/usr/share/nginx/html/shop/public/storage
     privileged: true
     restart: always
   redis:
@@ -58,3 +58,10 @@ services:
     volumes:
       #数据备份
       - ./mysql/data:/var/lib/mysql
+  elasticsearch:
+    container_name: shop-elasticsearch
+    image: 18865477815/elasticsearch
+    ports:
+      - 9200:9200
+    restart: always
+    privileged: true

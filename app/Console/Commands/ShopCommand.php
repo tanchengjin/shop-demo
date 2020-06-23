@@ -39,13 +39,13 @@ class ShopCommand extends Command
     public function handle()
     {
 
-        try{
+        try {
             Artisan::call('admin:install');
             Artisan::call('db:seed');
             Artisan::call('es:syncProducts');
             return $this->info('success');
 
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             return $this->error($e->getMessage());
         }
     }

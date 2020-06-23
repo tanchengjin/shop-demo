@@ -32,6 +32,9 @@ docker-compose up [-d 可选参数用于后台执行]
 ````
 docker exec -it shop-php composer install
 ````
+
+将.env.docker重命名为.env
+
 生成key
 ````
 docker exec -it shop-php php artisan key:generate
@@ -131,7 +134,10 @@ WECHAT_CERT_KEY=文件完整文件名
 ![avatar](images/product-category.png)
 订单支付
 ![avatar](images/product-payment.png)
-
+秒杀
+![avatar](images/seckill.jpg)
+众筹
+![avatar](images/crowdfunding.jpg)
 后台，商品、订单、分类、优惠券等
 ![avatar](images/admin-product.png)
 ![avatar](images/admin-product-recycle.png)
